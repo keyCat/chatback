@@ -17,3 +17,16 @@
 coverage
 node_modules
 npm-debug.log
+
+# Vendor files
+bower_components
+vendor
+
+# Temp directories
+temp/
+test/tmp
+test/temp
+
+# Other temp
+.sass-cache
+.grunt

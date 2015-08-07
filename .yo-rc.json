@@ -1,3 +1,15 @@
 {
-  "generator-loopback": {}
+  "generator-loopback": {},
+  "generator-mcfly": {
+    "filenameCase": "snake",
+    "filenameSuffix": true,
+    "appname": "chatbackClient",
+    "clientFolder": "client",
+    "ionic": false,
+    "famous": false,
+    "ngCordova": false,
+    "fontawesome": true,
+    "bootstrap": true,
+    "material": true
+  }
 }
