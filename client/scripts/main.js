@@ -8,8 +8,11 @@ if (window.location.toString().indexOf('localhost:5555') > 0) {
 var angular = require('angular');
 require('angular-ui-router');
 require('angular-material');
+require('angular-resource');
+
 var app = angular.module(namespace, [ 'ngMaterial',
     // inject:modules start
+    require('./loopback')(namespace).name
     // inject:modules end
 ]);
 

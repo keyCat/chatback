@@ -21,6 +21,9 @@
   "routes": {
   },
   "files": {
+    "loopback#static": {
+      "params": "$!../dist/app/dev/"
+    }
   },
   "final": {
     "loopback#urlNotFound": {}

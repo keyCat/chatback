@@ -18,9 +18,12 @@ coverage
 node_modules
 npm-debug.log
 
+# Ignore build files
+dist/
+
 # Vendor files
-bower_components
-vendor
+bower_components/
+vendor/
 
 # Temp directories
 temp/

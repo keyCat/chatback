@@ -142,8 +142,7 @@
     "node": ">=0.10.0"
   },
   "browser": {
-    "unitHelper": "./test/unit/unitHelper.js",
-    "lbServices": "./client/scripts/lbServices.js"
+    "unitHelper": "./test/unit/unitHelper.js"
   },
   "browserify": {
     "transform": [
