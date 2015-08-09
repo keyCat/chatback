@@ -1,5 +1,5 @@
 'use strict';
-var servicename = 'socket';
+var servicename = 'Socket';
 
 module.exports = function ( app ) {
   var dependencies = ['LoopBackAuth'];
