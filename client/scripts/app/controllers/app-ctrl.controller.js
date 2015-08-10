@@ -27,11 +27,7 @@ module.exports = function ( app ) {
     };
 
     vm.triggerCreateRoomDialog = function ( evt ) {
-      $mdDialog.show(angular.extend(createRoomDialogSettings, {targetEvent: evt}))
-        .then(function ( resource ) {
-          vm.rooms.push(resource);
-        });
-
+      $mdDialog.show(angular.extend(createRoomDialogSettings, {targetEvent: evt}));
     };
 
     function onRoomCreate( room ) {
