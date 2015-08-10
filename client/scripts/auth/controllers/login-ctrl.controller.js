@@ -5,13 +5,13 @@ module.exports = function ( app ) {
   var fullname = app.name + '.' + controllername;
   /*jshint validthis: true */
 
-  var deps = ['User'];
+  var deps = ['UserModel'];
 
-  function controller( User ) {
+  function controller( UserModel ) {
     var vm = this;
     vm.controllername = fullname;
     vm.login = function () {
-      User.login(vm.user, function ( resource, headersGetter ) {
+      UserModel.login(vm.user, function ( resource, headersGetter ) {
       });
     };
 
