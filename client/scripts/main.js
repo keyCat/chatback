@@ -1,6 +1,6 @@
 'use strict';
 
-var namespace = 'main';
+var namespace = 'chatback';
 // fix protractor issue
 if ( window.location.toString().indexOf('localhost:5555') > 0 ) {
   window.name = 'NG_DEFER_BOOTSTRAP!NG_ENABLE_DEBUG_INFO!';
