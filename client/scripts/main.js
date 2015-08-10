@@ -14,9 +14,9 @@ require('angular-messages');
 var app = angular.module(namespace, ['ngMaterial', 'ngMessages',
   // inject:modules start
                                      require('./app')(namespace).name,
-                                         require('./auth')(namespace).name,
-                                         require('./loopback')(namespace).name
-                                     // inject:modules end
+                                     require('./auth')(namespace).name,
+                                     require('./loopback')(namespace).name
+  // inject:modules end
 ]);
 
 if ( process.env.SENTRY_MODE === 'prod' ) {

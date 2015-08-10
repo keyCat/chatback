@@ -3,7 +3,7 @@ var servicename = 'Subscribe';
 
 module.exports = function ( app ) {
 
-  var dependencies = ['Socket'];
+  var dependencies = [app.name + '.Socket'];
 
   function service( Socket ) {
     var subscriptions = [];

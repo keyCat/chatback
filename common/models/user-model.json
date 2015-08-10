@@ -34,6 +34,20 @@
       "principalId": "$owner",
       "permission": "ALLOW",
       "property": "__create__rooms"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$owner",
+      "permission": "ALLOW",
+      "property": "__updateById__rooms"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$owner",
+      "permission": "ALLOW",
+      "property": "__destroyById__rooms"
     }
   ],
   "methods": {}

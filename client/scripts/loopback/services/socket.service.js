@@ -7,8 +7,12 @@ module.exports = function ( app ) {
   function service( LoopBackAuth ) {
     var url = window.location.origin;
     var socket = io.connect(url);
+    var atId = LoopBackAuth.accessTokenId;
+    var userId = LoopBackAuth.currentUserId;
 
-    // TODO: Socket authentication
+    socket.on('connect', function () {
+      socket.emit('authentication', {id: atId, userId: userId});
+    });
 
     return socket;
   }

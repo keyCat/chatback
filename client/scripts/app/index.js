@@ -17,11 +17,18 @@ module.exports = function ( namespace ) {
   var configRoutesDeps = ['$stateProvider', '$urlRouterProvider'];
   var configRoutes = function ( $stateProvider, $urlRouterProvider ) {
     $urlRouterProvider.otherwise('/');
-    $stateProvider.state('home', {
-      url: '/',
-      template: require('./views/home.html'),
-      controller: fullname + '.AppCtrl as vm'
-    });
+    $stateProvider
+      .state('app', {
+        abstract: true,
+        template: require('./views/app.html'),
+        controller: fullname + '.AppCtrl as vm'
+      })
+      .state('app.home', {
+        url: '/',
+        template: require('./views/home.html'),
+        controller: fullname + '.HomeCtrl as homeVm',
+        data: {title: 'Chatback'}
+      });
   };
   configRoutes.$inject = configRoutesDeps;
   app.config(configRoutes);
