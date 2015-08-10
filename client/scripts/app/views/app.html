@@ -4,18 +4,18 @@
       <h1>Welcome</h1>
     </md-toolbar>
 
-    <md-list>
-      <md-subheader>Rooms</md-subheader>
+    <md-list id="rooms-list" flex>
+      <div layout="row" layout-align="space-between start" id="rooms-list-header">
+        <md-subheader>Rooms</md-subheader>
+        <md-button ng-hide="vm.progress.rooms" ng-click="vm.triggerCreateRoomDialog($event);"><md-icon md-font-icon="fa-plus" class="fa"></md-icon></md-button>
+      </div>
       <md-progress-linear ng-show="vm.progress.rooms" md-mode="indeterminate" layout-padding></md-progress-linear>
       <md-list-item ng-repeat="room in vm.rooms" class="md-body-1" ng-click="vm.noop()">
         <p class="md-primary">{{room.name}}</p>
       </md-list-item>
-      <md-divider ng-hide="vm.progress.rooms"></md-divider>
-      <md-list-item ng-hide="vm.progress.rooms" ng-click="vm.triggerCreateRoomDialog($event);">
-        <md-icon md-font-icon="fa-plus" class="fa"></md-icon>
-        <p>Create Room</p>
-      </md-list-item>
-
+    </md-list>
+    <md-divider></md-divider>
+    <md-list>
       <md-subheader>Buddies</md-subheader>
     </md-list>
   </md-sidenav>
