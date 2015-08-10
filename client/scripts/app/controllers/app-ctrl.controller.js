@@ -17,6 +17,14 @@ module.exports = function ( app ) {
 
     vm.controllername = fullname;
     vm.rooms = [];
+    vm.progress = {};
+
+    vm.showProgress = function ( target ) {
+      vm.progress[target] = true;
+    };
+    vm.hideProgress = function ( target ) {
+      vm.progress[target] = false;
+    };
 
     vm.triggerCreateRoomDialog = function ( evt ) {
       $mdDialog.show(angular.extend(createRoomDialogSettings, {targetEvent: evt}))
@@ -27,8 +35,11 @@ module.exports = function ( app ) {
     };
 
     var activate = function () {
+      vm.showProgress('rooms');
       vm.$mdMedia = $mdMedia;
-      vm.rooms = Room.find();
+      vm.rooms = Room.find(function ( resource ) {
+        vm.hideProgress('rooms');
+      });
     };
     activate();
   }
