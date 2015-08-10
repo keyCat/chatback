@@ -1,0 +1,41 @@
+<md-content flex layout="column" layout-align="center center">
+  <div class="md-whiteframe-z2 auth-box">
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h1><span>Register</span></h1>
+      </div>
+    </md-toolbar>
+
+    <md-content layout="column" layout-padding>
+      <form name="vm.registerForm">
+        <md-input-container>
+          <label>&ast; Handle</label>
+          <input type="text" name="username" ng-model="vm.user.username" required/>
+          <div ng-messages="vm.registerForm.username.$error">
+            <div ng-message="required">Username is required</div>
+          </div>
+        </md-input-container>
+        <md-input-container>
+          <label>&ast; Email</label>
+          <input type="email" name="email" ng-model="vm.user.email" required/>
+          <div ng-messages="vm.registerForm.email.$error">
+            <div ng-message="required">Email is required</div>
+          </div>
+        </md-input-container>
+
+        <md-input-container>
+          <label>&ast; Password</label>
+          <input type="password" name="password" ng-model="vm.user.password" required/>
+          <div ng-messages="vm.registerForm.password.$error">
+            <div ng-message="required">Password is required</div>
+          </div>
+        </md-input-container>
+
+        <div layout="row" layout-align="space-between center">
+          <md-button class="md-primary md-raised" ng-click="vm.register();">Register</md-button>
+          <md-button class="md-primary" ui-sref="auth.login">Already have an account</md-button>
+        </div>
+      </form>
+    </md-content>
+  </div>
+</md-content>
