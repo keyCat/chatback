@@ -1,0 +1,21 @@
+<div layout="row" flex>
+  <md-sidenav layout="column" class="md-sidenav-left md-whiteframe-z2" md-component-id="main-sidenav-left" md-is-locked-open="true">
+    <md-toolbar class="md-tall md-hue-2" layout-padding>
+      <h1>Welcome</h1>
+    </md-toolbar>
+
+    <md-list>
+      <md-subheader>Rooms</md-subheader>
+      <md-list-item ng-repeat="room in vm.rooms" ng-click="">
+        <p>{{room.name}}</p>
+      </md-list-item>
+      <md-divider></md-divider>
+      <md-list-item ng-click="vm.triggerCreateRoomDialog($event);">
+        <md-icon md-font-icon="fa-plus" class="fa"></md-icon>
+        <p>Create Room</p>
+      </md-list-item>
+
+      <md-subheader>Buddies</md-subheader>
+    </md-list>
+  </md-sidenav>
+</div>

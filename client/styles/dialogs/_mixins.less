@@ -1,0 +1,7 @@
+.dialog-sizes(@n, @i: 1) when (@i =< @n) {
+  .dialog-@{i} {
+    width: (100% / @n * @i);
+  }
+
+  .dialog-sizes(@n, (@i + 1));
+}
