@@ -5,12 +5,12 @@
 
       <md-input-container>
         <label>New room's name</label>
-        <input type="text" ng-model="vm.room.name" required/>
+        <input type="text" ng-model="vm.room.name" required tabindex="1"/>
       </md-input-container>
 
       <div class="md-actions" layout="row">
-        <md-button type="submit" ng-click="vm.confirm()" class="md-primary md-raised">Create</md-button>
-        <md-button type="button" ng-click="vm.cancel()">Cancel</md-button>
+        <md-button type="submit" ng-click="vm.confirm()" class="md-primary md-raised" tabindex="3">Create</md-button>
+        <md-button type="button" ng-click="vm.cancel()" tabindex="2">Cancel</md-button>
       </div>
     </md-dialog-content>
   </form>
