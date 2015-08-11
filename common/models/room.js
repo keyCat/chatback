@@ -1,12 +1,21 @@
 var pubsub = require('../../server/lib/pubsub');
 
 module.exports = function ( Room ) {
-    Room.validatesUniquenessOf('name');
+  Room.validatesUniquenessOf('name');
+  Room.validatesLengthOf('name', {min: 3, max: 20});
 
   Room.beforeCreate = function ( next, instance ) {
     instance.setAttribute('created', Date.now());
     next();
   };
+
+  // trim leading/trailing whitespaces and whitespaces in the middle
+  Room.observe('before save', function ( ctx, next ) {
+    var rName = ctx.instance.name;
+    ctx.instance.name = rName.replace(/^\s+|\s$/g, '').replace(/\s+/g, ' ');
+
+    next();
+  });
 
   Room.observe('after save', function ( ctx, next ) {
     var socket = Room.app.io;

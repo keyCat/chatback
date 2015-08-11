@@ -1,15 +1,20 @@
 <md-dialog aria-label="Create Room" class="dialog-3">
-  <form>
+  <form name="vm.newRoomForm">
     <md-dialog-content>
       <h3>Create new room</h3>
 
       <md-input-container>
         <label>New room's name</label>
-        <input type="text" ng-model="vm.room.name" required tabindex="1"/>
+        <input type="text" name="room" ng-model="vm.room.name" ng-model-options="{debounce: 300}" required md-maxlength="20" ng-minlength="3" tabindex="1"/>
+        <div ng-messages="vm.newRoomForm.room.$error" ng-if="vm.newRoomForm.room.$dirty">
+          <div ng-message="required">Room name cannot be blank</div>
+          <div ng-message="minlength">Room name must consist of 3 or more characters</div>
+          <div ng-message="md-maxlength">Room name can't be longer than 20 characters</div>
+        </div>
       </md-input-container>
 
       <div class="md-actions" layout="row">
-        <md-button type="submit" ng-click="vm.confirm()" class="md-primary md-raised" tabindex="3">Create</md-button>
+        <md-button type="submit" ng-disabled="vm.newRoomForm.$invalid" ng-click="vm.confirm()" class="md-primary md-raised" tabindex="3">Create</md-button>
         <md-button type="button" ng-click="vm.cancel()" tabindex="2">Cancel</md-button>
       </div>
     </md-dialog-content>
