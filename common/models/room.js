@@ -20,7 +20,7 @@ module.exports = function ( Room ) {
   Room.observe('after save', function ( ctx, next ) {
     var socket = Room.app.io;
     var instance = ctx.instance;
-    var payload = {
+    var options = {
       modelName: Room.modelName,
       data: instance,
       modelId: instance.id,
@@ -30,13 +30,13 @@ module.exports = function ( Room ) {
     if ( ctx.isNewInstance ) {
       var chat = instance.chats.build();
       chat.save(function ( err, chat ) {
-        console.log(chat);
-        pubsub.publish(socket, payload);
-
+        pubsub.publish(socket, options);
         next(err);
       });
+    } else {
+      pubsub.publish(socket, options);
+      next();
     }
-
   });
 
   Room.observe('before delete', function ( ctx, next ) {
