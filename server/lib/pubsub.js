@@ -36,7 +36,7 @@ pubsub.publishTo = function ( socket, room, options ) {
   if ( options ) {
     var name = optionsToName(options);
     var data = options.data;
-    socket.emit(data);
+    socket.to(room).emit(name, data);
   } else {
     throw new Error('`options` must be defined');
   }
