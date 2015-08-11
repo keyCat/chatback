@@ -27,8 +27,10 @@ module.exports = function ( app ) {
       },
 
       once: function ( options, cb ) {
-        var name = optionsToName(options);
-        socket.once(name, cb);
+        if ( options ) {
+          var name = optionsToName(options);
+          socket.once(name, cb);
+        }
       },
 
       _pushSubscription: function ( subName ) {
