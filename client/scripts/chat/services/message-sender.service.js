@@ -26,12 +26,11 @@ module.exports = function ( app ) {
 
       publisher.publish(options);
       subscriber.once(options, function ( payload ) {
+        MessageSender.roomIds[id] = payload.rejected;
         if ( payload.rejected ) {
           deffered.reject(payload);
-          MessageSender.ids[id] = false;
         } else {
           deffered.resolve(payload);
-          MessageSender.ids[id] = true;
         }
       });
 
