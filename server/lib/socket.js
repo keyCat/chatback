@@ -67,7 +67,8 @@ function authenticate( app, value, cb ) {
 function postAuthenticate( app, socket, data ) {
   socket.client.data = {
     userId: data.userId,
-    isIdentified: false
+    isIdentified: false,
+    rooms: {}
   };
 
   app.models.UserModel.findById(data.userId, function ( err, user ) {
