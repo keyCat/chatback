@@ -5,20 +5,18 @@ module.exports = function ( app ) {
 
   var dependencies = [app.name + '.Socket'];
 
-  function service( Socket ) {
+  function optionsToName( options ) {
+    return options.method === 'POST'
+      ? '/' + options.modelName + '/' + options.method
+      : '/' + options.modelName + '/' + options.modelId + '/' + options.method;
+  }
+
+  function service( socket ) {
     var service = {
       publish: function ( options, data ) {
         if ( options ) {
-          var name;
-          var modelName = options.modelName,
-            method = options.method,
-            modelId = options.modelId;
-
-          name = method === 'POST'
-            ? '/' + modelName + '/' + method
-            : '/' + modelName + '/' + modelId + '/' + method;
-
-          Socket.emit(name, data);
+          var name = optionsToName(options);
+          socket.emit(name, data);
         }
       }
     };

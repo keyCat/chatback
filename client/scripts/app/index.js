@@ -48,6 +48,10 @@ module.exports = function ( namespace ) {
               });
 
             return deferred.promise;
+          }],
+
+          joinPermission: ['$q', namespace + '.loopback.Socket', function ($q, Socket) {
+            var deferred = $q.defer();
           }]
         }
       });
