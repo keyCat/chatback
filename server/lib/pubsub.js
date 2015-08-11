@@ -1,3 +1,4 @@
+var socketHandler = require('./socket');
 var pubsub = {};
 var subscriptions = [];
 
@@ -27,27 +28,53 @@ pubsub.publish = function ( socket, options ) {
 
 /**
  * Subscribe to an event
- * @param {Socket} socket The active socket
  * @param {Object} options Details about the event
  * @param {Function} cb Callback
  */
 
-pubsub.subscribe = function ( socket, options, cb ) {
+pubsub.subscribe = function ( options, cb ) {
   if ( options ) {
     var name = optionsToName(options);
+    pubsub._pushSubscription({name: name, cb: cb});
+  }
+};
 
-    socket.on(name, cb);
-    pubsub._pushSubscription(name);
+/**
+ * Utility function to add subscriptions to existing and new user sockets, use pubsub.subscribe
+ * @param {Socket} socket Connected socket
+ * @param {String} name Event name
+ * @param {Function} cb Callback reference
+ */
+
+pubsub._subscribeSocket = function ( socket, name, cb ) {
+  socket.on(name, cb);
+};
+
+/**
+ * Subscribe a socket to all subscribtions
+ * @param {Socket} socket Connected socket
+ */
+
+pubsub._subscribeToPast = function ( socket ) {
+  for ( var i = 0; i < subscriptions.length; i++ ) {
+    pubsub._subscribeSocket(socket, subscriptions[i].name, subscriptions[i].cb);
   }
 };
 
 /**
  * Remember subscription
- * @param {String} subName Subscription (event) name
+ * @param {Object} sub
  */
 
-pubsub._pushSubscription = function ( subName ) {
-  subscriptions.push(subName);
+pubsub._pushSubscription = function ( sub ) {
+  var socketUsers = socketHandler.users;
+  subscriptions.push(sub);
+
+  if ( socketUsers ) {
+    for ( var i = 0; i < socketUsers.length; i++ ) {
+      socketUsers[i].socket.on(sub.name, sub.cb);
+    }
+  }
 };
 
 /**
@@ -70,5 +97,7 @@ pubsub.isEmpty = function ( obj ) {
 
   return true;
 };
+
+pubsub.subscriptions = subscriptions;
 
 module.exports = pubsub;

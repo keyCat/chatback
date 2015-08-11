@@ -1,6 +1,5 @@
 var auth = require('socketio-auth');
-
-module.exports = socketHandler;
+var pubsub = require('./pubsub');
 
 function socketHandler( io, app ) {
   auth(io, {
@@ -12,6 +11,26 @@ function socketHandler( io, app ) {
     }
   });
 }
+
+socketHandler.users = [];
+socketHandler.users.findById = function ( id ) {
+  var user = null;
+  for ( var i = 0; i < socketHandler.users.length; i++ ) {
+    if ( socketHandler.users[i].id === id ) {
+      user = socketHandler.users[i];
+      break;
+    }
+  }
+};
+
+socketHandler.users.removeById = function ( id ) {
+  for ( var i = 0; i < socketHandler.users.length; i++ ) {
+    if ( socketHandler.users[i].id === id ) {
+      socketHandler.users.splice(i, 1);
+      break;
+    }
+  }
+};
 
 // authenticate socket
 function authenticate( app, value, cb ) {
@@ -31,6 +50,7 @@ function authenticate( app, value, cb ) {
 // persist user data in socket
 function postAuthenticate( app, socket, data ) {
   socket.client.data = {
+    userId: data.userId,
     isIdentified: false
   };
 
@@ -38,4 +58,12 @@ function postAuthenticate( app, socket, data ) {
     socket.client.data.user = user;
     socket.client.data.isIdentified = true;
   });
+
+  pubsub._subscribeToPast(socket);
+  socketHandler.users.push({id: data.userId, socket: socket});
+  socket.on('disconnect', function () {
+    socketHandler.users.removeById(data.userId);
+  });
 }
+
+module.exports = socketHandler;
