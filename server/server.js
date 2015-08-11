@@ -2,7 +2,7 @@ var loopback = require('loopback'),
   boot = require('loopback-boot');
 
 var io = require('socket.io'),
-  ioAuth = require('socketio-auth');
+  socketsHandler = require('./lib/socket');
 
 var app = module.exports = loopback();
 
@@ -22,21 +22,6 @@ boot(app, __dirname, function ( err ) {
   // start the server if `$ node server.js`
   if ( require.main === module ) {
     app.io = io(app.start());
-
-    ioAuth(app.io, {
-      authenticate: function ( value, cb ) {
-        var AccessToken = app.models.AccessToken,
-          token = AccessToken.find({
-              where: {
-                and: [{userId: value.userId}, {id: value.id}]
-              }
-            },
-            function ( err, tokenDetail ) {
-              if ( err ) throw err;
-
-              cb(null, tokenDetail.length > 0);
-            });
-      }
-    });
+    socketsHandler(app.io, app);
   }
 });
