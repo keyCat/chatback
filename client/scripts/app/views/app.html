@@ -10,7 +10,7 @@
         <md-button ng-hide="vm.progress.rooms" ng-click="vm.triggerCreateRoomDialog($event);"><md-icon md-font-icon="fa-plus" class="fa"></md-icon></md-button>
       </div>
       <md-progress-linear ng-show="vm.progress.rooms" md-mode="indeterminate" layout-padding></md-progress-linear>
-      <md-list-item ng-repeat="room in vm.rooms" class="md-body-1" ng-click="vm.noop()">
+      <md-list-item ng-repeat="room in vm.rooms" class="md-body-1" ng-click="vm.join(room)">
         <p class="md-primary">{{room.name}}</p>
       </md-list-item>
     </md-list>

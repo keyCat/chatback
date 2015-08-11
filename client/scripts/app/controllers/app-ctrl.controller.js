@@ -19,17 +19,6 @@ module.exports = function ( app ) {
     vm.progress = {};
     vm.$state = $state;
 
-    vm.showProgress = function ( target ) {
-      vm.progress[target] = true;
-    };
-    vm.hideProgress = function ( target ) {
-      vm.progress[target] = false;
-    };
-
-    vm.triggerCreateRoomDialog = function ( evt ) {
-      $mdDialog.show(angular.extend(createRoomDialogSettings, {targetEvent: evt}));
-    };
-
     function onRoomCreate( room ) {
       vm.rooms.push(room);
       subscribeToUpdates(room);
@@ -70,6 +59,21 @@ module.exports = function ( app ) {
         modelId: room.id
       }, onRoomDelete);
     }
+
+    vm.showProgress = function ( target ) {
+      vm.progress[target] = true;
+    };
+    vm.hideProgress = function ( target ) {
+      vm.progress[target] = false;
+    };
+
+    vm.triggerCreateRoomDialog = function ( evt ) {
+      $mdDialog.show(angular.extend(createRoomDialogSettings, {targetEvent: evt}));
+    };
+
+    vm.join = function ( room ) {
+      $state.go('app.room', {name: room.name});
+    };
 
     var activate = function () {
       vm.showProgress('rooms');
