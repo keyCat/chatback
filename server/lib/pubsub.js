@@ -72,7 +72,7 @@ pubsub._pushSubscription = function ( sub ) {
 
   if ( socketUsers ) {
     for ( var i = 0; i < socketUsers.length; i++ ) {
-      socketUsers[i].socket.on(sub.name, sub.cb);
+      pubsub._subscribeSocket(socketUsers[i].socket, sub.name, sub.cb);
     }
   }
 };
