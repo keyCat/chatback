@@ -40,5 +40,13 @@
   "Room": {
     "dataSource": "db",
     "public": true
+  },
+  "Chat": {
+    "dataSource": "db",
+    "public": true
+  },
+  "ChatMessage": {
+    "dataSource": "db",
+    "public": true
   }
 }

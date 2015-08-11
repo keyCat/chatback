@@ -19,15 +19,24 @@ module.exports = function ( Room ) {
 
   Room.observe('after save', function ( ctx, next ) {
     var socket = Room.app.io;
+    var instance = ctx.instance;
     var payload = {
       modelName: Room.modelName,
-      data: ctx.instance,
-      modelId: ctx.instance.id,
+      data: instance,
+      modelId: instance.id,
       method: ctx.isNewInstance ? 'POST' : 'PUT'
     };
 
-    pubsub.publish(socket, payload);
-    next();
+    if ( ctx.isNewInstance ) {
+      var chat = instance.chats.build();
+      chat.save(function ( err, chat ) {
+        console.log(chat);
+        pubsub.publish(socket, payload);
+
+        next(err);
+      });
+    }
+
   });
 
   Room.observe('before delete', function ( ctx, next ) {

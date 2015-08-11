@@ -13,6 +13,11 @@
       "type": "hasMany",
       "model": "Room",
       "foreignKey": "ownerId"
+    },
+    "messages": {
+      "type": "hasMany",
+      "model": "ChatMessage",
+      "foreignKey": "userId"
     }
   },
   "acls": [

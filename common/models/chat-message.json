@@ -1,0 +1,33 @@
+{
+  "name": "ChatMessage",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "message": {
+      "type": "string",
+      "required": true
+    },
+    "sentTs": {
+      "type": "date",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {
+    "chat": {
+      "type": "belongsTo",
+      "model": "Chat",
+      "foreignKey": ""
+    },
+    "user": {
+      "type": "belongsTo",
+      "model": "UserModel",
+      "foreignKey": ""
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

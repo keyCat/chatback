@@ -22,6 +22,11 @@
       "type": "belongsTo",
       "model": "UserModel",
       "foreignKey": ""
+    },
+    "chats": {
+      "type": "hasOne",
+      "model": "Chat",
+      "foreignKey": "roomId"
     }
   },
   "acls": [
