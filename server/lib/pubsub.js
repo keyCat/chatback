@@ -10,7 +10,7 @@ function optionsToName( options ) {
 
 /**
  * Publish an event
- * @param {Socket} socket The active socket
+ * @param {Socket} socket Socket.IO reference
  * @param {Object} options Details about event
  */
 
@@ -18,10 +18,26 @@ pubsub.publish = function ( socket, options ) {
   if ( options ) {
     var name = optionsToName(options);
     var data = options.data;
-
     socket.emit(name, data);
   }
   else {
+    throw new Error('`options` must be defined');
+  }
+};
+
+/**
+ * Emit message to a specific room
+ * @param {Socket} socket Socket.IO reference or client socket
+ * @param {String} room Id of the room
+ * @param {Object} options Details about event
+ */
+
+pubsub.publishTo = function ( socket, room, options ) {
+  if ( options ) {
+    var name = optionsToName(options);
+    var data = options.data;
+    socket.emit(data);
+  } else {
     throw new Error('`options` must be defined');
   }
 };
