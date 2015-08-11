@@ -70,9 +70,9 @@ function postAuthenticate( app, socket, data ) {
     isIdentified: false
   };
 
-  app.models.UserModel.find({id: data.userId}, function ( err, user ) {
+  app.models.UserModel.findById(data.userId, function ( err, user ) {
     socket.client.data.user = user;
-    socket.client.data.isIdentified = true;
+    socket.client.data.isIdentified = !!user;
   });
 
   pubsub._subscribeToPast(socket);
