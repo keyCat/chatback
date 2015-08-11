@@ -1,6 +1,8 @@
 var auth = require('socketio-auth');
 
-module.exports = function ( io, app ) {
+module.exports = socketHandler;
+
+function socketHandler( io, app ) {
   auth(io, {
     authenticate: function ( value, cb ) {
       authenticate(app, value, cb);
@@ -9,8 +11,9 @@ module.exports = function ( io, app ) {
       postAuthenticate(app, socket, data);
     }
   });
-};
+}
 
+// authenticate socket
 function authenticate( app, value, cb ) {
   var AccessToken = app.models.AccessToken,
     token = AccessToken.find({
@@ -25,8 +28,14 @@ function authenticate( app, value, cb ) {
       });
 }
 
+// persist user data in socket
 function postAuthenticate( app, socket, data ) {
+  socket.client.data = {
+    isIdentified: false
+  };
+
   app.models.UserModel.find({id: data.userId}, function ( err, user ) {
-    socket.client.user = user;
+    socket.client.data.user = user;
+    socket.client.data.isIdentified = true;
   });
 }
