@@ -1,6 +1,9 @@
 var pubsub = require('../../server/lib/pubsub');
+var socketHandler = require('../../server/lib/socket');
 
 module.exports = function ( Room ) {
+  var SOCKET_ROOM_ALIAS = '/chat/';
+
   Room.validatesUniquenessOf('name');
   Room.validatesLengthOf('name', {min: 3, max: 20});
 
@@ -9,49 +12,48 @@ module.exports = function ( Room ) {
     next();
   };
 
-  function subscribeToEvents( room ) {
-    pubsub.subscribe({
-      modelName: Room.modelName,
-      modelId: room.id,
-      method: 'JOIN'
-    }, function () { Room.join(this, room); });
-
-    pubsub.subscribe({
-      modelName: Room.modelName,
-      modelId: room.id,
-      method: 'LEAVE'
-    }, function () { Room.leave(this, room); });
-  }
-
   /**
    * Join chat room (subscribe to updates and allow to post)
-   * @param {Socket} socket Connected socket
-   * @param {ModelBuilder} instance Room instance
+   * @param {id} id Room id
+   * @param {Object} req Http request object to receive userId
+   * @param {Function} next Next method
    */
 
-  Room.join = function ( socket, instance ) {
-    var payload = {rejected: false};
-    var roomPresense = socket.client.data.rooms[instance.id];
+  Room.join = function ( id, req, next ) {
+    var userId = req.accessToken.userId;
 
-    if ( roomPresense ) return;
+    Room.findById(id, function ( err, room ) {
+      if ( !room ) err = new Error('No room with the given id');
+      if ( err ) next(err);
+      if ( room ) {
+        room.chats(function ( err, chat ) {
+          var response = {};
+          var socketUser = socketHandler.users.findById(userId);
+          var socket = socketUser ? socketUser.socket : null;
 
-    instance.chats(function ( err, chat ) {
-      payload.rejected = err || !chat;
-      if ( err ) console.error(err);
-      if ( chat && !payload.rejected ) {
-        payload.id = chat.id;
-        socket.client.data.rooms[instance.id] = {chatId: chat.id};
-        socket.join('/chat/' + chat.id);
+          if ( err ) next(err);
+          if ( chat ) {
+            response.cid = chat.id;
+            if ( socket && socket.client ) {
+              socket.client.data.rooms[id] = {chatId: chat.id};
+              socket.join(SOCKET_ROOM_ALIAS + chat.id);
+            }
+          }
+
+          next(null, response);
+        });
       }
-
-      pubsub.publishTo(Room.app.io, socket.id, {
-        modelName: Room.modelName,
-        modelId: instance.id,
-        method: 'JOIN',
-        data: payload
-      });
     });
   };
+
+  Room.remoteMethod('join', {
+    description: 'Join chat room (subscribe to updates and allow to post)',
+    accessType: 'WRITE',
+    accepts: [{arg: 'id', type: 'string', http: {source: 'path'}},
+      {arg: 'req', type: 'object', http: {source: 'req'}}],
+    returns: {arg: 'response', type: 'object', root: true},
+    http: {path: '/:id/join', verb: 'put'}
+  });
 
   /**
    * Leave chat room
@@ -59,23 +61,31 @@ module.exports = function ( Room ) {
    * @param {ModelBuilder} instance Room instance
    */
 
-  Room.leave = function ( socket, instance ) {
-    var roomPresense = socket.client.data.rooms[instance.id];
+  Room.leave = function ( id, req, next ) {
+    var userId = req.accessToken.userId;
+    var socketUser = socketHandler.users.findById(userId);
+    var socket = socketUser ? socketUser.socket : null;
+    var leave = !!socket && !!socket.client;
 
-    if ( roomPresense ) {
-      socket.leave('/chat/' + chat.id);
+    if ( leave ) {
+      var roomPresense = socket.client.data.rooms[id];
+
+      if ( roomPresense ) {
+        socket.leave(SOCKET_ROOM_ALIAS + chat.id);
+        delete socket.client.data.rooms[id];
+      }
     }
-    delete socket.client.data.rooms[instance.id];
+
+    next(null, leave);
   };
 
-  Room.on('dataSourceAttached', function ( ds ) {
-    Room.find({}, function ( err, rooms ) {
-      if ( err ) throw err;
-
-      for ( var i = 0; i < rooms.length; i++ ) {
-        subscribeToEvents(rooms[i]);
-      }
-    });
+  Room.remoteMethod('leave', {
+    description: 'Leave chat room',
+    accessType: 'WRITE',
+    accepts: [{arg: 'id', type: 'string', http: {source: 'path'}},
+      {arg: 'req', type: 'object', http: {source: 'req'}}],
+    returns: {arg: 'leaved', type: 'boolean'},
+    http: {path: '/:id/leave', verb: 'put'}
   });
 
   // trim leading/trailing whitespaces and whitespaces in the middle
