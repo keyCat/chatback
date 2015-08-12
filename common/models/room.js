@@ -110,7 +110,6 @@ module.exports = function ( Room ) {
       var chat = instance.chats.build();
       chat.save(function ( err, chat ) {
         pubsub.publish(socket, options);
-        subscribeToEvents(instance);
         next(err);
       });
     } else {
