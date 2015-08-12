@@ -3,12 +3,15 @@ var servicename = 'RoomManager';
 
 module.exports = function ( app ) {
 
-  var dependencies = ['$q', 'Room', 'chatback.loopback.Subscribe'];
+  var dependencies = ['$q', 'Room', app.name + '.Chat', 'chatback.loopback.Subscribe'];
 
-  function service( $q, Room, subscriber ) {
+  function service( $q, Room, Chat, subscriber ) {
     var RoomManager = {
       connRooms: {
-        // id/resource pair
+        // roomId/resource pair
+      },
+      connChats: {
+        // roomId/chat pair
       }
     };
 
@@ -36,8 +39,9 @@ module.exports = function ( app ) {
       };
 
       // remember connected rooms
-      var rememberRoom = function ( resource ) {
+      var rememberRoomAndChat = function ( resource ) {
         RoomManager.connRooms[resource.id] = resource;
+        RoomManager.connChats[resource.id] = new Chat(resource);
       };
 
       if ( room ) {
@@ -67,7 +71,7 @@ module.exports = function ( app ) {
         }
       }
 
-      deferred.promise.then(rememberRoom);
+      deferred.promise.then(rememberRoomAndChat);
 
       return deferred.promise;
     };
@@ -96,6 +100,24 @@ module.exports = function ( app ) {
       deferred.promise.then(forgetRoom);
 
       return deferred.promise;
+    };
+
+    /**
+     * Get associated chat
+     * @param {id} id Room id
+     * */
+
+    RoomManager.getChat = function ( id ) {
+      return RoomManager.connChats[id] || null;
+    };
+
+    /**
+     * Get saved room resource
+     * @param {id} id Room id
+     * */
+
+    RoomManager.getRoom = function ( id ) {
+      return RoomManager.connRooms[id] || null;
     };
 
     return RoomManager;

@@ -5,28 +5,19 @@ module.exports = function ( app ) {
   var fullname = app.name + '.' + controllername;
   /*jshint validthis: true */
 
-  var deps = ['$scope', '$state', 'resolvedRoom', 'Chat', 'chatback.loopback.Subscribe'];
+  var deps = ['$state', 'resolvedRoom', 'chatback.loopback.Subscribe', 'chatback.chat.RoomManager'];
 
-  function controller( $scope, $state, resolvedRoom, Chat, subscriber ) {
+  function controller( $state, resolvedRoom, subscriber, rm ) {
     var vm = this;
     vm.controllername = fullname;
-    vm.messages = [];
-    vm.users = [];
+    vm.chat = rm.getChat(resolvedRoom.id);
 
     vm.sendMessage = function () {
-      if ( vm.message && resolvedRoom.chatId ) {
-        Chat.messages.create({id: resolvedRoom.chatId}, {message: vm.message});
-        vm.message = '';
-      }
+      vm.chat.send(vm.message)
+        .then(function () {
+          vm.message = '';
+        });
     };
-
-    subscriber.subscribe({
-      modelName: 'ChatMessage',
-      method: 'POST'
-    }, function ( message ) {
-      vm.messages.push(message);
-      $scope.$apply();
-    });
 
     var activate = function () {
       var title = '#' + resolvedRoom.name;
