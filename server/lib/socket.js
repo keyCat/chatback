@@ -20,20 +20,26 @@ socketHandler.users = [];
 socketHandler.users.findById = function ( id ) {
   var user = null;
   for ( var i = 0; i < socketHandler.users.length; i++ ) {
-    if ( socketHandler.users[i].id === id ) {
+    if ( socketHandler.users[i].id.toString() === id.toString() ) {
       user = socketHandler.users[i];
       break;
     }
   }
+
+  return user;
 };
 
 socketHandler.users.removeById = function ( id ) {
+  var removed = null;
+
   for ( var i = 0; i < socketHandler.users.length; i++ ) {
-    if ( socketHandler.users[i].id === id ) {
-      socketHandler.users.splice(i, 1);
+    if ( socketHandler.users[i].id.toString() === id.toString() ) {
+      removed = socketHandler.users.splice(i, 1);
       break;
     }
   }
+
+  return removed;
 };
 
 /**
