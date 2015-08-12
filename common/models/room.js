@@ -21,19 +21,20 @@ module.exports = function ( Room ) {
 
   Room.join = function ( id, req, next ) {
     var userId = req.accessToken.userId;
+    var response = {};
 
     Room.findById(id, function ( err, room ) {
       if ( !room ) err = new Error('No room with the given id');
       if ( err ) next(err);
       if ( room ) {
+        response = room;
         room.chats(function ( err, chat ) {
-          var response = {};
           var socketUser = socketHandler.users.findById(userId);
           var socket = socketUser ? socketUser.socket : null;
 
           if ( err ) next(err);
           if ( chat ) {
-            response.cid = chat.id;
+            response.chatId = chat.id;
             if ( socket && socket.client ) {
               socket.client.data.rooms[id] = {chatId: chat.id};
               socket.join(SOCKET_ROOM_ALIAS + chat.id);
