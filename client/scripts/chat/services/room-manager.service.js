@@ -27,7 +27,7 @@ module.exports = function ( app ) {
       // ask server to join
       var join = function ( resource ) {
         resource.$join(function ( response ) {
-            if ( response.chatId ) {
+            if ( response.chats && response.chats.id ) {
               deferred.resolve(resource);
             } else {
               deferred.reject(response);

@@ -23,27 +23,24 @@ module.exports = function ( Room ) {
     var userId = req.accessToken.userId;
     var response = {};
 
-    Room.findById(id, function ( err, room ) {
-      if ( !room ) err = new Error('No room with the given id');
-      if ( err ) next(err);
+    Room.findById(id, {include: 'chats'}, function ( err, room ) {
       if ( room ) {
+        // this is required in order to get chats instance instead of method
+        var converted = JSON.parse(JSON.stringify(room));
+        var socketUser = socketHandler.users.findById(userId);
+        var socket = socketUser ? socketUser.socket : null;
+
+        if ( socket && socket.client ) {
+          socket.client.data.rooms[id] = {chatId: converted.chats.id};
+          socket.join(SOCKET_ROOM_ALIAS + converted.chats.id);
+        }
+
         response = room;
-        room.chats(function ( err, chat ) {
-          var socketUser = socketHandler.users.findById(userId);
-          var socket = socketUser ? socketUser.socket : null;
-
-          if ( err ) next(err);
-          if ( chat ) {
-            response.chatId = chat.id;
-            if ( socket && socket.client ) {
-              socket.client.data.rooms[id] = {chatId: chat.id};
-              socket.join(SOCKET_ROOM_ALIAS + chat.id);
-            }
-          }
-
-          next(null, response);
-        });
+      } else {
+        err = new Error('No room with the given id');
       }
+
+      next(err, response);
     });
   };
 

@@ -18,7 +18,7 @@ module.exports = function ( app ) {
       this.messages = [];
       this.users = [];
       this.room = room;
-      this._active = angular.isDefined(room.id) && angular.isDefined(room.chatId);
+      this._active = angular.isDefined(room.id) && angular.isDefined(room.chats.id);
 
       if ( this._active ) {
         this.id = this.chatId;
@@ -46,7 +46,7 @@ module.exports = function ( app ) {
 
         // strip spaces (sorry, ASCII art)
         msg = msg.replace(/^\s+/g, '').replace(/\s+/g, ' ').replace(/\s+$/g, '');
-        message = ChatResource.messages.create({id: this.room.chatId}, {message: msg}).$promise;
+        message = ChatResource.messages.create({id: this.room.chats.id}, {message: msg}).$promise;
       } else {
         deferred.reject();
         message = deferred.promise;
