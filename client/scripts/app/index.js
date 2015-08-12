@@ -23,7 +23,7 @@ module.exports = function ( namespace ) {
         template: require('./views/app.html'),
         controller: fullname + '.AppCtrl as vm',
         resolve: {
-          initSockets: [namespace + '.loopback.Socket', function (socket) {
+          initSockets: [namespace + '.loopback.Socket', function ( socket ) {
             return socket.$conn.promise;
           }]
         }
@@ -39,29 +39,20 @@ module.exports = function ( namespace ) {
         template: require('./views/room.html'),
         controller: fullname + '.RoomCtrl as roomVm',
         resolve: {
-          resolvedRoom: ['$q', '$state', '$stateParams', 'Room', namespace + '.loopback.Socket', function ( $q, $state, $stateParams, Room, socket ) {
-            var name = $stateParams.name;
-            var deferred = $q.defer();
+          resolvedRoom: ['$q',
+                         '$state',
+                         '$stateParams',
+                         namespace + '.chat.RoomManager',
+                         namespace + '.loopback.Socket',
+                         function ( $q, $state, $stateParams, rm, socket ) {
+                           var name = $stateParams.name;
 
-            socket.$conn.promise.then(function () {
-              Room.findOne({filter: {where: {"name": name}}},
-                function ( resource ) {
-                  resource.$join(function ( response ) {
-                    if ( response.chatId ) {
-                      deferred.resolve(resource);
-                    } else {
-                      deferred.reject(resource);
-                    }
-                  });
-                },
-                function ( headers ) {
-                  deferred.reject(headers);
-                  $state.go('app.home');
-                });
-            });
-
-            return deferred.promise;
-          }]
+                           return socket.$conn.promise
+                             .then(function () {
+                               return rm.join({name: name})
+                                 .then(function ( room ) { return room });
+                             });
+                         }]
         }
       });
   };

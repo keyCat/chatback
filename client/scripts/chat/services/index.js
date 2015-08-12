@@ -2,6 +2,6 @@
 
 module.exports = function(app) {
     // inject:start
-    require('./message-sender.service')(app);
+    require('./room-manager.service')(app);
     // inject:end
 };
