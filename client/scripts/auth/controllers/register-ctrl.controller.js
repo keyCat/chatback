@@ -5,20 +5,22 @@ module.exports = function ( app ) {
   var fullname = app.name + '.' + controllername;
   /*jshint validthis: true */
 
-  var deps = ['UserModel'];
+  var deps = ['UserModel', '$state'];
 
-  function controller( UserModel ) {
+  function controller( User, $state ) {
     var vm = this;
     vm.controllername = fullname;
 
     vm.register = function () {
-      UserModel.create(vm.user, function ( resource, headersGetter ) {
+      User.create(vm.user, function ( resource, headersGetter ) {
         vm.login();
       });
     };
 
     vm.login = function () {
-      UserModel.login(vm.user);
+      User.login(vm.user, function () {
+        $state.go('app.home')
+      });
     };
 
     var activate = function () {

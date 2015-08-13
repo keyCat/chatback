@@ -25,6 +25,18 @@ module.exports = function ( namespace ) {
         resolve: {
           initSockets: [namespace + '.loopback.Socket', function ( socket ) {
             return socket.$conn.promise;
+          }],
+
+          authentication: ['$q', '$state', 'UserModel', 'LoopBackAuth', function ( $q, $state, User, Auth ) {
+
+            return User.getCurrent(function ( user ) {
+                var at = Auth.accessTokenId;
+                Auth.clearUser();
+                Auth.setUser(at, user.id, user);
+              },
+              function ( headers ) {
+                $state.go('auth.login');
+              });
           }]
         }
       })

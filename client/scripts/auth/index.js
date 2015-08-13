@@ -19,7 +19,21 @@ module.exports = function ( namespace ) {
     $urlRouterProvider.otherwise('/');
     $stateProvider.state('auth', {
       abstract: true,
-      template: require('./views/auth.html')
+      template: require('./views/auth.html'),
+      resolve: {
+        authentication: ['$q', '$state', 'LoopBackAuth', function ( $q, $state, Auth ) {
+          var deffered = $q.defer();
+          if ( Auth.accessTokenId && Auth.currentUserId ) {
+            deffered.reject();
+          } else {
+            deffered.resolve();
+          }
+
+          return deffered.promise.catch(function () {
+            $state.go('app.home');
+          });
+        }]
+      }
     });
 
     $stateProvider.state('auth.login', {
