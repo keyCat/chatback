@@ -10,24 +10,24 @@
       <form name="vm.registerForm">
         <md-input-container>
           <label>&ast; Handle</label>
-          <input type="text" name="username" ng-model="vm.user.username" required/>
-          <div ng-messages="vm.registerForm.username.$error">
-            <div ng-message="required">Username is required</div>
+          <input type="text" name="username" ng-model="vm.user.username" ng-model-options="{debounce: 300}" required/>
+          <div ng-messages="vm.registerForm.username.$error" ng-if="vm.registerForm.username.$dirty">
+            <div ng-message="required">Required</div>
           </div>
         </md-input-container>
         <md-input-container>
           <label>&ast; Email</label>
-          <input type="email" name="email" ng-model="vm.user.email" required/>
-          <div ng-messages="vm.registerForm.email.$error">
-            <div ng-message="required">Email is required</div>
+          <input type="email" name="email" ng-model="vm.user.email" ng-model-options="{debounce: 300}" required/>
+          <div ng-messages="vm.registerForm.email.$error" ng-if="vm.registerForm.email.$dirty">
+            <div ng-message="required">Required</div>
           </div>
         </md-input-container>
 
         <md-input-container>
           <label>&ast; Password</label>
-          <input type="password" name="password" ng-model="vm.user.password" required/>
-          <div ng-messages="vm.registerForm.password.$error">
-            <div ng-message="required">Password is required</div>
+          <input type="password" name="password" ng-model="vm.user.password" ng-model-options="{debounce: 300}" required/>
+          <div ng-messages="vm.registerForm.password.$error" ng-if="vm.registerForm.password.$dirty">
+            <div ng-message="required">Required</div>
           </div>
         </md-input-container>
 
