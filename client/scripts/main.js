@@ -10,8 +10,9 @@ require('angular-ui-router');
 require('angular-material');
 require('angular-resource');
 require('angular-messages');
+require('angular-material-icons');
 
-var app = angular.module(namespace, ['ngMaterial', 'ngMessages',
+var app = angular.module(namespace, ['ngMaterial', 'ngMessages', 'ngMdIcons',
   // inject:modules start
                                      require('./app')(namespace).name,
                                          require('./auth')(namespace).name,
