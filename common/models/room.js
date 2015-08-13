@@ -20,19 +20,23 @@ module.exports = function ( Room ) {
   Room.join = function ( id, req, next ) {
     var userId = req.accessToken.userId;
     var response = {};
+    var UserModel = Room.app.models.UserModel;
 
     Room.findById(id, {include: 'chats'}, function ( err, room ) {
       if ( room ) {
         // this is required in order to get chats instance instead of method
         var converted = JSON.parse(JSON.stringify(room));
+        var userIds = socketHandler.users.findInRoom(id, true);
         socketHandler.joinRoom(userId, id, converted.chats.id);
 
-        response = room;
-      } else {
-        err = new Error('No room with the given id');
-      }
+        UserModel.find({where: {id: {inq: userIds}}, fields: {id: true, username: true}}, function ( err, users ) {
+          converted.users = users;
+          response = converted;
+          next(err, response);
+        });
 
-      next(err, response);
+
+      }
     });
   };
 
