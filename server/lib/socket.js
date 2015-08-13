@@ -19,8 +19,17 @@ function socketHandler( io, app ) {
 
 socketHandler.SOCKET_ROOM_ALIAS = SOCKET_ROOM_ALIAS;
 
-// storage for connected user/socket pair
+/**
+ * storage for connected userId/socket {id: 1, socket: Socket}
+ * */
 socketHandler.users = [];
+
+/**
+ * Find connected user socket by user id
+ * @param {id} id User id
+ * @returns {Object} User id and connected socket {id: 1, socket: Socket}
+ **/
+
 socketHandler.users.findById = function ( id ) {
   var user = null;
   for ( var i = 0; i < socketHandler.users.length; i++ ) {
@@ -32,6 +41,12 @@ socketHandler.users.findById = function ( id ) {
 
   return user;
 };
+
+/**
+ * Remove connected user socket by user id
+ * @param {id} id User id
+ * @returns {Boolean} removed User was found and removed
+ * */
 
 socketHandler.users.removeById = function ( id ) {
   var removed = null;
@@ -45,6 +60,13 @@ socketHandler.users.removeById = function ( id ) {
 
   return removed;
 };
+
+/**
+ * Find user sockets in specific room. Room means chat room, not a socket.io room
+ * @param {id} id Room id
+ * @param {Boolean} idsOnly Return only user ids
+ * @returns {Array} filtered Users sockets (ids) that belong to a room
+ * */
 
 socketHandler.users.findInRoom = function ( id, idsOnly ) {
   var filtered = socketHandler.users.filter(function ( user ) {
@@ -61,6 +83,13 @@ socketHandler.users.findInRoom = function ( id, idsOnly ) {
   return filtered;
 };
 
+/**
+ * Join socket.io room
+ * @param {id} userId User id
+ * @param {id} roomId Room id
+ * @param {id} chatId Chat id
+ * */
+
 socketHandler.joinRoom = function ( userId, roomId, chatId ) {
   var user = socketHandler.users.findById(userId);
   var socket = user ? user.socket : null;
@@ -70,6 +99,14 @@ socketHandler.joinRoom = function ( userId, roomId, chatId ) {
     socket.join(SOCKET_ROOM_ALIAS + chatId);
   }
 };
+
+/**
+ * Leave room
+ * @param {id} userId User id
+ * @param {id} roomId Room id
+ * @param {id} chatId Chat id
+ * @returns {Boolean} leave User removed from the room
+ * */
 
 socketHandler.leaveRoom = function ( userId, roomId, chatId ) {
   var user = socketHandler.users.findById(userId);
