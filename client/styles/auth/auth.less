@@ -1,3 +1,17 @@
 .auth-box {
-  width: 500px;
+  width: 100%;
+}
+
+@media screen and (max-width: 600px) {
+  .auth-box {
+    -webkit-box-shadow: none!important;
+    -moz-box-shadow: none!important;
+    box-shadow: none!important;
+  }
+}
+
+@media screen and (min-width: 600px) {
+  .auth-box {
+    width: 500px;
+  }
 }
