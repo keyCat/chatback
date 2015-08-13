@@ -15,6 +15,7 @@ module.exports = function ( app ) {
 
     function Chat( room ) {
       var _self = this;
+      this.receivedCbs = [];
       this.messages = [];
       this.users = [];
       this.room = room;
@@ -28,6 +29,9 @@ module.exports = function ( app ) {
         }, function ( message ) {
           // TODO: store limited amount of messages and pull other from history
           _self.messages.push(message);
+          for ( var i = 0; i < _self.receivedCbs.length; i++ ) {
+            _self.receivedCbs[i](message);
+          }
         });
       }
     }
@@ -53,6 +57,25 @@ module.exports = function ( app ) {
       }
 
       return message;
+    };
+
+    /**
+     * Register callback on receiving new message
+     * @param {Function} cb Callback
+     * */
+
+    Chat.prototype.onMessageReceived = function ( cb ) {
+      if ( typeof cb === 'function' ) {
+        this.receivedCbs.push(cb);
+      }
+    };
+
+    /**
+     * Return messages
+     * */
+
+    Chat.prototype.getMessages = function () {
+      return this.messages;
     };
 
     return Chat;

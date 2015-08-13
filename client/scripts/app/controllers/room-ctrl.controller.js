@@ -5,12 +5,18 @@ module.exports = function ( app ) {
   var fullname = app.name + '.' + controllername;
   /*jshint validthis: true */
 
-  var deps = ['$state', 'resolvedRoom', 'chatback.loopback.Subscribe', 'chatback.chat.RoomManager'];
+  var deps = ['$scope', '$state', 'resolvedRoom', 'chatback.loopback.Subscribe', 'chatback.chat.RoomManager'];
 
-  function controller( $state, resolvedRoom, subscriber, rm ) {
+  function controller( $scope, $state, resolvedRoom, subscriber, rm ) {
     var vm = this;
     vm.controllername = fullname;
     vm.chat = rm.getChat(resolvedRoom.id);
+    vm.messages = [];
+
+    vm.chat.onMessageReceived(function ( message ) {
+      vm.messages = vm.chat.getMessages();
+      $scope.$apply();
+    });
 
     vm.sendMessage = function () {
       vm.chat.send(vm.message)
@@ -30,6 +36,7 @@ module.exports = function ( app ) {
         }
       }
       vm.message = '';
+      vm.messages = vm.chat.getMessages();
     };
     activate();
   }
