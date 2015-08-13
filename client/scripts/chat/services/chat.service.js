@@ -22,15 +22,17 @@ module.exports = function ( app ) {
       this._active = angular.isDefined(room.id) && angular.isDefined(room.chats.id);
 
       if ( this._active ) {
-        this.id = this.chatId;
+        this.id = this.room.chats.id;
         subscriber.subscribe({
           modelName: messageModel,
           method: 'POST'
         }, function ( message ) {
           // TODO: store limited amount of messages and pull other from history
-          _self.messages.push(message);
-          for ( var i = 0; i < _self.receivedCbs.length; i++ ) {
-            _self.receivedCbs[i](message);
+          if ( message.chatId === _self.id ) {
+            _self.messages.push(message);
+            for ( var i = 0; i < _self.receivedCbs.length; i++ ) {
+              _self.receivedCbs[i](message);
+            }
           }
         });
       }
