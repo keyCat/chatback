@@ -14,8 +14,12 @@
 
   <form name="roomVm.sendMessageForm" class="chat-form">
     <md-input-container layout="row" class="md-whiteframe-z3" md-no-float>
-      <textarea rows="1" flex-order="1" ng-model="roomVm.message" placeholder="Chat in {{vm.$state.current.data.title}}..."></textarea>
-      <md-button flex-order="2" type="submit" ng-disabled="roomVm.$invalid" ng-click="roomVm.sendMessage();">Send</md-button>
+      <div class="textarea-wrapper" flex-order="1">
+        <textarea rows="1" ng-model="roomVm.message" placeholder="Chat in {{vm.$state.current.data.title}}..."></textarea>
+      </div>
+      <md-button flex-order="2" type="submit" ng-disabled="roomVm.$invalid" ng-click="roomVm.sendMessage();">
+        <ng-md-icon icon="send"></ng-md-icon>
+      </md-button>
     </md-input-container>
   </form>
 </div>
