@@ -2,8 +2,6 @@ var pubsub = require('../../server/lib/pubsub');
 var socketHandler = require('../../server/lib/socket');
 
 module.exports = function ( ChatMessage ) {
-  var SOCKET_ROOM_ALIAS = '/chat/';
-
   ChatMessage.observe('before save', function ( ctx, next ) {
     var loopback = ChatMessage.app.loopback;
     var userId = loopback.getCurrentContext().active.accessToken.userId;
@@ -24,7 +22,7 @@ module.exports = function ( ChatMessage ) {
       method: ctx.isNewInstance ? 'POST' : 'PUT',
       data: instance
     };
-    pubsub.publishTo(io, SOCKET_ROOM_ALIAS + instance.chatId, options);
+    pubsub.publishTo(io, socketHandler.SOCKET_ROOM_ALIAS + instance.chatId, options);
 
     next();
   });

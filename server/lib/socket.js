@@ -46,11 +46,19 @@ socketHandler.users.removeById = function ( id ) {
   return removed;
 };
 
-socketHandler.users.findInRoom = function ( id ) {
-  return socketHandler.users.filter(function ( user ) {
+socketHandler.users.findInRoom = function ( id, idsOnly ) {
+  var filtered = socketHandler.users.filter(function ( user ) {
     var socket = user.socket;
     return socket.client && socket.client.data && socket.client.data.rooms[id];
   });
+
+  if ( idsOnly ) {
+    filtered = filtered.map(function ( user ) {
+      return user.id;
+    });
+  }
+
+  return filtered;
 };
 
 socketHandler.joinRoom = function ( userId, roomId, chatId ) {
