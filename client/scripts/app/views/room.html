@@ -3,7 +3,7 @@
     <md-list class="chat-messages-list">
       <md-list-item ng-repeat="m in roomVm.messages">
         <div class="md-list-item-text">
-          <h3>{{m.userId}} <span class="chat-messages-list-date">{{m.sentTs | date:'hh:mm'}}</span></h3>
+          <h3>{{m.username}} <span class="chat-messages-list-date">{{m.sentTs | date:'hh:mm'}}</span></h3>
 
           <p>{{m.message}}</p>
         </div>

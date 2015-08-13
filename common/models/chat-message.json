@@ -10,6 +10,10 @@
       "type": "string",
       "required": true
     },
+    "username": {
+      "type": "string",
+      "required": false
+    },
     "sentTs": {
       "type": "date",
       "required": false

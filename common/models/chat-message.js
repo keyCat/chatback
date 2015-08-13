@@ -9,8 +9,18 @@ module.exports = function ( ChatMessage ) {
     ctx.instance.userId = userId;
     if ( ctx.isNewInstance ) {
       ctx.instance.sentTs = Date.now();
+      ChatMessage.app.models.UserModel.findById(userId, function ( err, user ) {
+        if ( err ) return next(err);
+        if ( user ) {
+          ctx.instance.setAttribute('username', user.username);
+          next();
+        } else {
+          next(new Error('No associated user.'))
+        }
+      });
+    } else {
+      next();
     }
-    next();
   });
 
   ChatMessage.observe('after save', function ( ctx, next ) {
