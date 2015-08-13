@@ -19,9 +19,11 @@ module.exports = function ( app ) {
      * Join a room
      * @param {Resource} room Room resource
      * @param {Object} room Configuration object {id: id}, {name: name} (id has most priority)
+     * @param {Boolean} forceNew Force creation of new Chat object and Room resource. Useful for reconnects
+     * @returns {Promise} promise Resolves into room resource with chat id and users present when room exists and server allowed to access it
      */
 
-    RoomManager.join = function ( room ) {
+    RoomManager.join = function ( room, forceNew ) {
       var deferred = $q.defer();
 
       // ask server to join
@@ -40,8 +42,16 @@ module.exports = function ( app ) {
 
       // remember connected rooms
       var rememberRoomAndChat = function ( resource ) {
-        RoomManager.connRooms[resource.id] = resource;
-        RoomManager.connChats[resource.id] = new Chat(resource);
+        var newRoom = !RoomManager.connRooms[resource.id] || forceNew;
+        var newChat = !RoomManager.connChats[resource.id] || forceNew;
+
+        if ( newRoom ) {
+          RoomManager.connRooms[resource.id] = resource;
+        }
+
+        if ( newChat ) {
+          RoomManager.connChats[resource.id] = new Chat(resource);
+        }
       };
 
       if ( room ) {
@@ -79,6 +89,7 @@ module.exports = function ( app ) {
     /**
      * Leave a room
      * @param {id} id Room id
+     * @returns {Promise} promise Resolves into boolean when after server response
      */
 
     RoomManager.leave = function ( id ) {
