@@ -5,9 +5,9 @@ module.exports = function ( app ) {
   var fullname = app.name + '.' + controllername;
   /*jshint validthis: true */
 
-  var deps = ['$scope', '$mdMedia', '$mdDialog', '$state', 'Room', 'chatback.loopback.Subscribe'];
+  var deps = ['$scope', '$mdMedia', '$mdUtil', '$mdSidenav', '$mdDialog', '$state', 'Room', 'chatback.loopback.Subscribe'];
 
-  function controller( $scope, $mdMedia, $mdDialog, $state, Room, Subscriber ) {
+  function controller( $scope, $mdMedia, $mdUtil, $mdSidenav, $mdDialog, $state, Room, Subscriber ) {
     var vm = this;
     var createRoomDialogSettings = {
       controller: app.name + '.CreateRoomDialogCtrl as vm',
@@ -59,6 +59,15 @@ module.exports = function ( app ) {
         modelId: room.id
       }, onRoomDelete);
     }
+
+    function buildToggler(navID) {
+      var debounceFn =  $mdUtil.debounce(function(){
+        $mdSidenav(navID).toggle();
+      },200);
+      return debounceFn;
+    }
+
+    vm.toggleMainSidenav = buildToggler('sidenav-left');
 
     vm.showProgress = function ( target ) {
       vm.progress[target] = true;
