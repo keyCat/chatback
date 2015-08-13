@@ -2,8 +2,6 @@ var pubsub = require('../../server/lib/pubsub');
 var socketHandler = require('../../server/lib/socket');
 
 module.exports = function ( Room ) {
-  var SOCKET_ROOM_ALIAS = '/chat/';
-
   Room.validatesUniquenessOf('name');
   Room.validatesLengthOf('name', {min: 3, max: 20});
 
@@ -27,13 +25,7 @@ module.exports = function ( Room ) {
       if ( room ) {
         // this is required in order to get chats instance instead of method
         var converted = JSON.parse(JSON.stringify(room));
-        var socketUser = socketHandler.users.findById(userId);
-        var socket = socketUser ? socketUser.socket : null;
-
-        if ( socket && socket.client ) {
-          socket.client.data.rooms[id] = {chatId: converted.chats.id};
-          socket.join(SOCKET_ROOM_ALIAS + converted.chats.id);
-        }
+        socketHandler.joinRoom(userId, id, converted.chats.id);
 
         response = room;
       } else {
@@ -61,20 +53,19 @@ module.exports = function ( Room ) {
 
   Room.leave = function ( id, req, next ) {
     var userId = req.accessToken.userId;
-    var socketUser = socketHandler.users.findById(userId);
-    var socket = socketUser ? socketUser.socket : null;
-    var leave = !!socket && !!socket.client;
+    var response = false;
 
-    if ( leave ) {
-      var roomPresense = socket.client.data.rooms[id];
-
-      if ( roomPresense ) {
-        socket.leave(SOCKET_ROOM_ALIAS + chat.id);
-        delete socket.client.data.rooms[id];
+    Room.findById(id, {include: 'chats'}, function ( err, room ) {
+      if ( room ) {
+        // this is required in order to get chats instance instead of method
+        var converted = JSON.parse(JSON.stringify(room));
+        response = socketHandler.leaveRoom(userId, id, converted.chats.id);
+      } else {
+        err = new Error('No room with the given id');
       }
-    }
 
-    next(null, leave);
+      next(err, response);
+    });
   };
 
   Room.remoteMethod('leave', {

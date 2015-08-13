@@ -1,6 +1,8 @@
 var auth = require('socketio-auth');
 var pubsub = require('./pubsub');
 
+var SOCKET_ROOM_ALIAS = '/chat/';
+
 /**
  * Activate authentication middleware on socket.io instance
  * */
@@ -14,6 +16,8 @@ function socketHandler( io, app ) {
     }
   });
 }
+
+socketHandler.SOCKET_ROOM_ALIAS = SOCKET_ROOM_ALIAS;
 
 // storage for connected user/socket pair
 socketHandler.users = [];
@@ -40,6 +44,40 @@ socketHandler.users.removeById = function ( id ) {
   }
 
   return removed;
+};
+
+socketHandler.users.findInRoom = function ( id ) {
+  return socketHandler.users.filter(function ( user ) {
+    var socket = user.socket;
+    return socket.client && socket.client.data && socket.client.data.rooms[id];
+  });
+};
+
+socketHandler.joinRoom = function ( userId, roomId, chatId ) {
+  var user = socketHandler.users.findById(userId);
+  var socket = user ? user.socket : null;
+
+  if ( socket && socket.client ) {
+    socket.client.data.rooms[roomId] = {chatId: chatId};
+    socket.join(SOCKET_ROOM_ALIAS + chatId);
+  }
+};
+
+socketHandler.leaveRoom = function ( userId, roomId, chatId ) {
+  var user = socketHandler.users.findById(userId);
+  var socket = user ? user.socket : null;
+  var leave = !!socket && !!socket.client;
+
+  if ( leave ) {
+    var roomPresense = socket.client.data.rooms[roomId];
+
+    if ( roomPresense ) {
+      socket.leave(SOCKET_ROOM_ALIAS + chatId);
+      delete socket.client.data.rooms[id];
+    }
+  }
+
+  return leave;
 };
 
 /**
