@@ -5,9 +5,17 @@ module.exports = function ( app ) {
   var fullname = app.name + '.' + controllername;
   /*jshint validthis: true */
 
-  var deps = ['$scope', '$mdMedia', '$mdUtil', '$mdSidenav', '$mdDialog', '$state', 'Room', 'chatback.loopback.Subscribe'];
+  var deps = ['$scope',
+              '$mdMedia',
+              '$mdUtil',
+              '$mdSidenav',
+              '$mdDialog',
+              '$state',
+              'Room',
+              'LoopBackAuth',
+              'chatback.loopback.Subscribe'];
 
-  function controller( $scope, $mdMedia, $mdUtil, $mdSidenav, $mdDialog, $state, Room, Subscriber ) {
+  function controller( $scope, $mdMedia, $mdUtil, $mdSidenav, $mdDialog, $state, Room, Auth, Subscriber ) {
     var vm = this;
     var createRoomDialogSettings = {
       controller: app.name + '.CreateRoomDialogCtrl as vm',
@@ -18,6 +26,7 @@ module.exports = function ( app ) {
     vm.rooms = [];
     vm.progress = {};
     vm.$state = $state;
+    vm.user = Auth.currentUserData;
 
     function onRoomCreate( room ) {
       vm.rooms.push(room);

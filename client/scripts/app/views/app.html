@@ -1,8 +1,9 @@
 <div layout="row" flex>
   <md-sidenav layout="column" class="md-sidenav-left md-whiteframe-z4" md-component-id="sidenav-left" md-is-locked-open="vm.$mdMedia('gt-md')">
     <md-toolbar class="md-tall md-hue-2" layout-padding>
+      <span flex></span>
       <div class="md-toolbar-tools">
-        <h1>Welcome</h1>
+        <h1>{{vm.user.username}}</h1>
       </div>
     </md-toolbar>
 
