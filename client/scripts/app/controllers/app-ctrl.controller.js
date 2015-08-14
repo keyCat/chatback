@@ -12,10 +12,22 @@ module.exports = function ( app ) {
               '$mdDialog',
               '$state',
               'Room',
+              'Friend',
               'LoopBackAuth',
               'chatback.loopback.Subscribe'];
 
-  function controller( $scope, $mdMedia, $mdUtil, $mdSidenav, $mdDialog, $state, Room, Auth, Subscriber ) {
+  /*TODO: separate into controllers this godly creature*/
+
+  function controller( $scope,
+                       $mdMedia,
+                       $mdUtil,
+                       $mdSidenav,
+                       $mdDialog,
+                       $state,
+                       Room,
+                       Friend,
+                       Auth,
+                       Subscriber ) {
     var vm = this;
     var createRoomDialogSettings = {
       controller: app.name + '.CreateRoomDialogCtrl as vm',
@@ -24,6 +36,7 @@ module.exports = function ( app ) {
     };
     vm.controllername = fullname;
     vm.rooms = [];
+    vm.friends = [];
     vm.progress = {};
     vm.$state = $state;
     vm.user = Auth.currentUserData;
@@ -69,12 +82,16 @@ module.exports = function ( app ) {
       }, onRoomDelete);
     }
 
-    function buildToggler(navID) {
-      var debounceFn =  $mdUtil.debounce(function(){
+    function buildToggler( navID ) {
+      var debounceFn = $mdUtil.debounce(function () {
         $mdSidenav(navID).toggle();
-      },200);
+      }, 200);
       return debounceFn;
     }
+
+    vm.openFriendMenu = function ( $mdOpenMenu, evt ) {
+      $mdOpenMenu(evt);
+    };
 
     vm.toggleMainSidenav = buildToggler('sidenav-left');
 
@@ -108,6 +125,8 @@ module.exports = function ( app ) {
           subscribeToUpdates(resource[i]);
         }
       });
+
+      vm.friends = Friend.my();
     };
     activate();
   }
