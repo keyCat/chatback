@@ -5,9 +5,9 @@ module.exports = function ( app ) {
   var fullname = app.name + '.' + controllername;
   /*jshint validthis: true */
 
-  var deps = ['UserModel', '$state'];
+  var deps = ['UserModel', '$state', 'chatback.loopback.Socket'];
 
-  function controller( User, $state ) {
+  function controller( User, $state, socket ) {
     var vm = this;
     vm.controllername = fullname;
 
@@ -19,6 +19,7 @@ module.exports = function ( app ) {
 
     vm.login = function () {
       User.login(vm.user, function () {
+        socket.$reconnect();
         $state.go('app.home')
       });
     };

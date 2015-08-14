@@ -6,7 +6,8 @@ module.exports = function ( app ) {
 
   var ioConfig = {
     'remember transport': true,
-    'transports': [
+    forceNew: true,
+    transports: [
       'websocket',
       'xhr-multipart',
       'xhr-polling',
@@ -17,15 +18,15 @@ module.exports = function ( app ) {
   function service( $q, LoopBackAuth ) {
     var url = window.location.origin;
     var socket = io.connect(url, ioConfig);
-    var atId = LoopBackAuth.accessTokenId;
-    var userId = LoopBackAuth.currentUserId;
 
-    socket.$conn = $q.defer();
-    socket.$auth = $q.defer();
+    function defer() {
+      socket.$conn = $q.defer();
+      socket.$auth = $q.defer();
+    }
 
-    socket.on('connect', function () {
+    function onConnect() {
       socket.$conn.resolve();
-      socket.emit('authentication', {id: atId, userId: userId});
+      socket.emit('authentication', {id: LoopBackAuth.accessTokenId, userId: LoopBackAuth.currentUserId});
 
       socket.on('authenticated', function () {
         socket.$auth.resolve();
@@ -34,7 +35,21 @@ module.exports = function ( app ) {
       socket.on('unauthorized', function () {
         socket.$auth.reject();
       });
-    });
+    }
+
+    function reconnect() {
+      var cbs = socket._callbacks;
+      socket = io.connect(url, ioConfig);
+      defer();
+      socket._callbacks = cbs;
+      socket.$reconnect = reconnect;
+    }
+
+    socket.$reconnect = reconnect;
+
+    defer();
+
+    socket.on('connect', onConnect);
 
     socket.on('connect_timeout', function () {
       var m = 'timeout';
