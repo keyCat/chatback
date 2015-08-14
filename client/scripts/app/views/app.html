@@ -23,7 +23,7 @@
     <md-list>
       <md-subheader>Buddies</md-subheader>
       <md-list-item ng-repeat="friend in vm.friends" ng-click="noop();">
-        <p>{{friend.username}}</p>
+        <p>{{friend.user.username}}</p>
 
         <md-menu>
           <md-button class="md-icon-button" ng-click="vm.openFriendMenu($mdOpenMenu, $event);">

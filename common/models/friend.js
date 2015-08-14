@@ -88,29 +88,39 @@ module.exports = function ( Friend ) {
     http: {path: '/:id/accept', verb: 'put'}
   });
 
+  /**
+   * Return list of friend requests and related UserModels for current user
+   * */
+
   Friend.my = function ( next ) {
     var UserModel = Friend.app.models.UserModel;
     var userId = loopback.getCurrentContext().active.accessToken.userId;
 
-    Friend.find({}, function ( err, friendReqs ) {
-      if ( friendReqs && friendReqs.length ) {
-        var ids = friendReqs.map(function ( val ) {
-          var notUser = val.senderId.toString() === userId.toString() ? val.receiverId : val.senderId;
+    Friend.find({include: ['sender', 'receiver']}, function ( err, friends ) {
+      var response = [];
+      var mapUser = function ( user ) {
+        return {
+          id: user.id,
+          username: user.username
+        };
+      };
 
-          return notUser;
-        });
+      response = friends.map(function ( val ) {
+        var f = JSON.parse(JSON.stringify(val));
+        return {
+          id: f.id,
+          sendTs: f.sendTs,
+          status: f.status,
+          user: f.senderId.toString() === userId.toString() ? mapUser(f.receiver) : mapUser(f.sender)
+        };
+      });
 
-        UserModel.find({where: {id: {inq: ids}}, fields: {id: true, username: true}}, function ( err, users ) {
-          next(err, users);
-        });
-      } else {
-        next(err, friendReqs);
-      }
+      next(err, response);
     });
   };
 
   Friend.remoteMethod('my', {
-    description: 'Return current user friends',
+    description: 'Return list of friend requests and related UserModels for current user',
     accessType: 'READ',
     returns: {arg: 'friends', type: 'array', root: true},
     http: {path: '/my', verb: 'get'}
