@@ -1,0 +1,71 @@
+{
+  "name": "Friend",
+  "plural": "Friends",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "senderId": {
+      "type": "any",
+      "required": true
+    },
+    "receiverId": {
+      "type": "any",
+      "required": true
+    },
+    "status": {
+      "type": "number"
+    },
+    "sendTs": {
+      "type": "date"
+    },
+    "receivedTs": {
+      "type": "date"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "sender": {
+      "type": "belongsTo",
+      "model": "UserModel",
+      "foreignKey": ""
+    },
+    "receiver": {
+      "type": "belongsTo",
+      "model": "UserModel",
+      "foreignKey": ""
+    }
+  },
+  "acls": [
+    {
+      "accessType": "READ",
+      "principalType": "ROLE",
+      "principalId": "$owner",
+      "permission": "ALLOW"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$owner",
+      "permission": "ALLOW",
+      "property": "accept"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$owner",
+      "permission": "ALLOW",
+      "property": "deleteById"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW",
+      "property": "my"
+    }
+  ],
+  "methods": {}
+}

@@ -34,6 +34,7 @@ module.exports = function(app) {
    * for an example of using this object.
    *
    */
+
   app.factory(
     "AccessToken",
     ['LoopBackResource', 'LoopBackAuth', '$injector', function(Resource, LoopBackAuth, $injector) {
@@ -1505,6 +1506,18 @@ module.exports = function(app) {
           // INTERNAL. Use ChatMessage.user() instead.
           "::get::ChatMessage::user": {
             url: urlBase + "/ChatMessages/:id/user",
+            method: "GET"
+          },
+
+          // INTERNAL. Use Friend.sender() instead.
+          "::get::Friend::sender": {
+            url: urlBase + "/Friends/:id/sender",
+            method: "GET"
+          },
+
+          // INTERNAL. Use Friend.receiver() instead.
+          "::get::Friend::receiver": {
+            url: urlBase + "/Friends/:id/receiver",
             method: "GET"
           },
 
@@ -5406,6 +5419,745 @@ module.exports = function(app) {
       R.user = function() {
         var TargetResource = $injector.get("UserModel");
         var action = TargetResource["::get::ChatMessage::user"];
+        return action.apply(R, arguments);
+      };
+
+      return R;
+    }]);
+
+  /**
+   * @ngdoc object
+   * @name lbServices.Friend
+   * @header lbServices.Friend
+   * @object
+   *
+   * @description
+   *
+   * A $resource object for interacting with the `Friend` model.
+   *
+   * ## Example
+   *
+   * See
+   * {@link http://docs.angularjs.org/api/ngResource.$resource#example $resource}
+   * for an example of using this object.
+   *
+   */
+  app.factory(
+    "Friend",
+    ['LoopBackResource', 'LoopBackAuth', '$injector', function(Resource, LoopBackAuth, $injector) {
+      var R = Resource(
+        urlBase + "/Friends/:id",
+        { 'id': '@id' },
+        {
+
+          // INTERNAL. Use Friend.sender() instead.
+          "prototype$__get__sender": {
+            url: urlBase + "/Friends/:id/sender",
+            method: "GET"
+          },
+
+          // INTERNAL. Use Friend.receiver() instead.
+          "prototype$__get__receiver": {
+            url: urlBase + "/Friends/:id/receiver",
+            method: "GET"
+          },
+
+          /**
+           * @ngdoc method
+           * @name lbServices.Friend#create
+           * @methodOf lbServices.Friend
+           *
+           * @description
+           *
+           * Create a new instance of the model and persist it into the data source.
+           *
+           * @param {Object=} parameters Request parameters.
+           *
+           *   This method does not accept any parameters.
+           *   Supply an empty object or omit this argument altogether.
+           *
+           * @param {Object} postData Request data.
+           *
+           * This method expects a subset of model properties as request parameters.
+           *
+           * @param {function(Object,Object)=} successCb
+           *   Success callback with two arguments: `value`, `responseHeaders`.
+           *
+           * @param {function(Object)=} errorCb Error callback with one argument:
+           *   `httpResponse`.
+           *
+           * @returns {Object} An empty reference that will be
+           *   populated with the actual data once the response is returned
+           *   from the server.
+           *
+           * <em>
+           * (The remote method definition does not provide any description.
+           * This usually means the response is a `Friend` object.)
+           * </em>
+           */
+          "create": {
+            url: urlBase + "/Friends",
+            method: "POST"
+          },
+
+          /**
+           * @ngdoc method
+           * @name lbServices.Friend#createMany
+           * @methodOf lbServices.Friend
+           *
+           * @description
+           *
+           * Create a new instance of the model and persist it into the data source.
+           *
+           * @param {Object=} parameters Request parameters.
+           *
+           *   This method does not accept any parameters.
+           *   Supply an empty object or omit this argument altogether.
+           *
+           * @param {Object} postData Request data.
+           *
+           * This method expects a subset of model properties as request parameters.
+           *
+           * @param {function(Array.<Object>,Object)=} successCb
+           *   Success callback with two arguments: `value`, `responseHeaders`.
+           *
+           * @param {function(Object)=} errorCb Error callback with one argument:
+           *   `httpResponse`.
+           *
+           * @returns {Array.<Object>} An empty reference that will be
+           *   populated with the actual data once the response is returned
+           *   from the server.
+           *
+           * <em>
+           * (The remote method definition does not provide any description.
+           * This usually means the response is a `Friend` object.)
+           * </em>
+           */
+          "createMany": {
+            isArray: true,
+            url: urlBase + "/Friends",
+            method: "POST"
+          },
+
+          /**
+           * @ngdoc method
+           * @name lbServices.Friend#upsert
+           * @methodOf lbServices.Friend
+           *
+           * @description
+           *
+           * Update an existing model instance or insert a new one into the data source.
+           *
+           * @param {Object=} parameters Request parameters.
+           *
+           *   This method does not accept any parameters.
+           *   Supply an empty object or omit this argument altogether.
+           *
+           * @param {Object} postData Request data.
+           *
+           * This method expects a subset of model properties as request parameters.
+           *
+           * @param {function(Object,Object)=} successCb
+           *   Success callback with two arguments: `value`, `responseHeaders`.
+           *
+           * @param {function(Object)=} errorCb Error callback with one argument:
+           *   `httpResponse`.
+           *
+           * @returns {Object} An empty reference that will be
+           *   populated with the actual data once the response is returned
+           *   from the server.
+           *
+           * <em>
+           * (The remote method definition does not provide any description.
+           * This usually means the response is a `Friend` object.)
+           * </em>
+           */
+          "upsert": {
+            url: urlBase + "/Friends",
+            method: "PUT"
+          },
+
+          /**
+           * @ngdoc method
+           * @name lbServices.Friend#exists
+           * @methodOf lbServices.Friend
+           *
+           * @description
+           *
+           * Check whether a model instance exists in the data source.
+           *
+           * @param {Object=} parameters Request parameters.
+           *
+           *  - `id` – `{*}` - Model id
+           *
+           * @param {function(Object,Object)=} successCb
+           *   Success callback with two arguments: `value`, `responseHeaders`.
+           *
+           * @param {function(Object)=} errorCb Error callback with one argument:
+           *   `httpResponse`.
+           *
+           * @returns {Object} An empty reference that will be
+           *   populated with the actual data once the response is returned
+           *   from the server.
+           *
+           * Data properties:
+           *
+           *  - `exists` – `{boolean=}` -
+           */
+          "exists": {
+            url: urlBase + "/Friends/:id/exists",
+            method: "GET"
+          },
+
+          /**
+           * @ngdoc method
+           * @name lbServices.Friend#findById
+           * @methodOf lbServices.Friend
+           *
+           * @description
+           *
+           * Find a model instance by id from the data source.
+           *
+           * @param {Object=} parameters Request parameters.
+           *
+           *  - `id` – `{*}` - Model id
+           *
+           *  - `filter` – `{object=}` - Filter defining fields and include
+           *
+           * @param {function(Object,Object)=} successCb
+           *   Success callback with two arguments: `value`, `responseHeaders`.
+           *
+           * @param {function(Object)=} errorCb Error callback with one argument:
+           *   `httpResponse`.
+           *
+           * @returns {Object} An empty reference that will be
+           *   populated with the actual data once the response is returned
+           *   from the server.
+           *
+           * <em>
+           * (The remote method definition does not provide any description.
+           * This usually means the response is a `Friend` object.)
+           * </em>
+           */
+          "findById": {
+            url: urlBase + "/Friends/:id",
+            method: "GET"
+          },
+
+          /**
+           * @ngdoc method
+           * @name lbServices.Friend#find
+           * @methodOf lbServices.Friend
+           *
+           * @description
+           *
+           * Find all instances of the model matched by filter from the data source.
+           *
+           * @param {Object=} parameters Request parameters.
+           *
+           *  - `filter` – `{object=}` - Filter defining fields, where, include, order, offset, and limit
+           *
+           * @param {function(Array.<Object>,Object)=} successCb
+           *   Success callback with two arguments: `value`, `responseHeaders`.
+           *
+           * @param {function(Object)=} errorCb Error callback with one argument:
+           *   `httpResponse`.
+           *
+           * @returns {Array.<Object>} An empty reference that will be
+           *   populated with the actual data once the response is returned
+           *   from the server.
+           *
+           * <em>
+           * (The remote method definition does not provide any description.
+           * This usually means the response is a `Friend` object.)
+           * </em>
+           */
+          "find": {
+            isArray: true,
+            url: urlBase + "/Friends",
+            method: "GET"
+          },
+
+          /**
+           * @ngdoc method
+           * @name lbServices.Friend#findOne
+           * @methodOf lbServices.Friend
+           *
+           * @description
+           *
+           * Find first instance of the model matched by filter from the data source.
+           *
+           * @param {Object=} parameters Request parameters.
+           *
+           *  - `filter` – `{object=}` - Filter defining fields, where, include, order, offset, and limit
+           *
+           * @param {function(Object,Object)=} successCb
+           *   Success callback with two arguments: `value`, `responseHeaders`.
+           *
+           * @param {function(Object)=} errorCb Error callback with one argument:
+           *   `httpResponse`.
+           *
+           * @returns {Object} An empty reference that will be
+           *   populated with the actual data once the response is returned
+           *   from the server.
+           *
+           * <em>
+           * (The remote method definition does not provide any description.
+           * This usually means the response is a `Friend` object.)
+           * </em>
+           */
+          "findOne": {
+            url: urlBase + "/Friends/findOne",
+            method: "GET"
+          },
+
+          /**
+           * @ngdoc method
+           * @name lbServices.Friend#updateAll
+           * @methodOf lbServices.Friend
+           *
+           * @description
+           *
+           * Update instances of the model matched by where from the data source.
+           *
+           * @param {Object=} parameters Request parameters.
+           *
+           *  - `where` – `{object=}` - Criteria to match model instances
+           *
+           * @param {Object} postData Request data.
+           *
+           * This method expects a subset of model properties as request parameters.
+           *
+           * @param {function(Object,Object)=} successCb
+           *   Success callback with two arguments: `value`, `responseHeaders`.
+           *
+           * @param {function(Object)=} errorCb Error callback with one argument:
+           *   `httpResponse`.
+           *
+           * @returns {Object} An empty reference that will be
+           *   populated with the actual data once the response is returned
+           *   from the server.
+           *
+           * This method returns no data.
+           */
+          "updateAll": {
+            url: urlBase + "/Friends/update",
+            method: "POST"
+          },
+
+          /**
+           * @ngdoc method
+           * @name lbServices.Friend#deleteById
+           * @methodOf lbServices.Friend
+           *
+           * @description
+           *
+           * Delete a model instance by id from the data source.
+           *
+           * @param {Object=} parameters Request parameters.
+           *
+           *  - `id` – `{*}` - Model id
+           *
+           * @param {function(Object,Object)=} successCb
+           *   Success callback with two arguments: `value`, `responseHeaders`.
+           *
+           * @param {function(Object)=} errorCb Error callback with one argument:
+           *   `httpResponse`.
+           *
+           * @returns {Object} An empty reference that will be
+           *   populated with the actual data once the response is returned
+           *   from the server.
+           *
+           * This method returns no data.
+           */
+          "deleteById": {
+            url: urlBase + "/Friends/:id",
+            method: "DELETE"
+          },
+
+          /**
+           * @ngdoc method
+           * @name lbServices.Friend#count
+           * @methodOf lbServices.Friend
+           *
+           * @description
+           *
+           * Count instances of the model matched by where from the data source.
+           *
+           * @param {Object=} parameters Request parameters.
+           *
+           *  - `where` – `{object=}` - Criteria to match model instances
+           *
+           * @param {function(Object,Object)=} successCb
+           *   Success callback with two arguments: `value`, `responseHeaders`.
+           *
+           * @param {function(Object)=} errorCb Error callback with one argument:
+           *   `httpResponse`.
+           *
+           * @returns {Object} An empty reference that will be
+           *   populated with the actual data once the response is returned
+           *   from the server.
+           *
+           * Data properties:
+           *
+           *  - `count` – `{number=}` -
+           */
+          "count": {
+            url: urlBase + "/Friends/count",
+            method: "GET"
+          },
+
+          /**
+           * @ngdoc method
+           * @name lbServices.Friend#prototype$updateAttributes
+           * @methodOf lbServices.Friend
+           *
+           * @description
+           *
+           * Update attributes for a model instance and persist it into the data source.
+           *
+           * @param {Object=} parameters Request parameters.
+           *
+           *  - `id` – `{*}` - PersistedModel id
+           *
+           * @param {Object} postData Request data.
+           *
+           * This method expects a subset of model properties as request parameters.
+           *
+           * @param {function(Object,Object)=} successCb
+           *   Success callback with two arguments: `value`, `responseHeaders`.
+           *
+           * @param {function(Object)=} errorCb Error callback with one argument:
+           *   `httpResponse`.
+           *
+           * @returns {Object} An empty reference that will be
+           *   populated with the actual data once the response is returned
+           *   from the server.
+           *
+           * <em>
+           * (The remote method definition does not provide any description.
+           * This usually means the response is a `Friend` object.)
+           * </em>
+           */
+          "prototype$updateAttributes": {
+            url: urlBase + "/Friends/:id",
+            method: "PUT"
+          },
+
+          /**
+           * @ngdoc method
+           * @name lbServices.Friend#createChangeStream
+           * @methodOf lbServices.Friend
+           *
+           * @description
+           *
+           * Create a change stream.
+           *
+           * @param {Object=} parameters Request parameters.
+           *
+           *   This method does not accept any parameters.
+           *   Supply an empty object or omit this argument altogether.
+           *
+           * @param {Object} postData Request data.
+           *
+           *  - `options` – `{object=}` -
+           *
+           * @param {function(Object,Object)=} successCb
+           *   Success callback with two arguments: `value`, `responseHeaders`.
+           *
+           * @param {function(Object)=} errorCb Error callback with one argument:
+           *   `httpResponse`.
+           *
+           * @returns {Object} An empty reference that will be
+           *   populated with the actual data once the response is returned
+           *   from the server.
+           *
+           * Data properties:
+           *
+           *  - `changes` – `{ReadableStream=}` -
+           */
+          "createChangeStream": {
+            url: urlBase + "/Friends/change-stream",
+            method: "POST"
+          },
+
+          /**
+           * @ngdoc method
+           * @name lbServices.Friend#accept
+           * @methodOf lbServices.Friend
+           *
+           * @description
+           *
+           * Accept friend request
+           *
+           * @param {Object=} parameters Request parameters.
+           *
+           *  - `id` – `{string=}` -
+           *
+           * @param {Object} postData Request data.
+           *
+           * This method does not accept any data. Supply an empty object.
+           *
+           * @param {function(Object,Object)=} successCb
+           *   Success callback with two arguments: `value`, `responseHeaders`.
+           *
+           * @param {function(Object)=} errorCb Error callback with one argument:
+           *   `httpResponse`.
+           *
+           * @returns {Object} An empty reference that will be
+           *   populated with the actual data once the response is returned
+           *   from the server.
+           *
+           * <em>
+           * (The remote method definition does not provide any description.
+           * This usually means the response is a `Friend` object.)
+           * </em>
+           */
+          "accept": {
+            url: urlBase + "/Friends/:id/accept",
+            method: "PUT"
+          },
+
+          /**
+           * @ngdoc method
+           * @name lbServices.Friend#my
+           * @methodOf lbServices.Friend
+           *
+           * @description
+           *
+           * Return current user friends
+           *
+           * @param {Object=} parameters Request parameters.
+           *
+           *   This method does not accept any parameters.
+           *   Supply an empty object or omit this argument altogether.
+           *
+           * @param {function(Array.<Object>,Object)=} successCb
+           *   Success callback with two arguments: `value`, `responseHeaders`.
+           *
+           * @param {function(Object)=} errorCb Error callback with one argument:
+           *   `httpResponse`.
+           *
+           * @returns {Array.<Object>} An empty reference that will be
+           *   populated with the actual data once the response is returned
+           *   from the server.
+           *
+           * <em>
+           * (The remote method definition does not provide any description.
+           * This usually means the response is a `Friend` object.)
+           * </em>
+           */
+          "my": {
+            isArray: true,
+            url: urlBase + "/Friends/my",
+            method: "GET"
+          },
+        }
+      );
+
+
+
+      /**
+       * @ngdoc method
+       * @name lbServices.Friend#updateOrCreate
+       * @methodOf lbServices.Friend
+       *
+       * @description
+       *
+       * Update an existing model instance or insert a new one into the data source.
+       *
+       * @param {Object=} parameters Request parameters.
+       *
+       *   This method does not accept any parameters.
+       *   Supply an empty object or omit this argument altogether.
+       *
+       * @param {Object} postData Request data.
+       *
+       * This method expects a subset of model properties as request parameters.
+       *
+       * @param {function(Object,Object)=} successCb
+       *   Success callback with two arguments: `value`, `responseHeaders`.
+       *
+       * @param {function(Object)=} errorCb Error callback with one argument:
+       *   `httpResponse`.
+       *
+       * @returns {Object} An empty reference that will be
+       *   populated with the actual data once the response is returned
+       *   from the server.
+       *
+       * <em>
+       * (The remote method definition does not provide any description.
+       * This usually means the response is a `Friend` object.)
+       * </em>
+       */
+      R["updateOrCreate"] = R["upsert"];
+
+      /**
+       * @ngdoc method
+       * @name lbServices.Friend#update
+       * @methodOf lbServices.Friend
+       *
+       * @description
+       *
+       * Update instances of the model matched by where from the data source.
+       *
+       * @param {Object=} parameters Request parameters.
+       *
+       *  - `where` – `{object=}` - Criteria to match model instances
+       *
+       * @param {Object} postData Request data.
+       *
+       * This method expects a subset of model properties as request parameters.
+       *
+       * @param {function(Object,Object)=} successCb
+       *   Success callback with two arguments: `value`, `responseHeaders`.
+       *
+       * @param {function(Object)=} errorCb Error callback with one argument:
+       *   `httpResponse`.
+       *
+       * @returns {Object} An empty reference that will be
+       *   populated with the actual data once the response is returned
+       *   from the server.
+       *
+       * This method returns no data.
+       */
+      R["update"] = R["updateAll"];
+
+      /**
+       * @ngdoc method
+       * @name lbServices.Friend#destroyById
+       * @methodOf lbServices.Friend
+       *
+       * @description
+       *
+       * Delete a model instance by id from the data source.
+       *
+       * @param {Object=} parameters Request parameters.
+       *
+       *  - `id` – `{*}` - Model id
+       *
+       * @param {function(Object,Object)=} successCb
+       *   Success callback with two arguments: `value`, `responseHeaders`.
+       *
+       * @param {function(Object)=} errorCb Error callback with one argument:
+       *   `httpResponse`.
+       *
+       * @returns {Object} An empty reference that will be
+       *   populated with the actual data once the response is returned
+       *   from the server.
+       *
+       * This method returns no data.
+       */
+      R["destroyById"] = R["deleteById"];
+
+      /**
+       * @ngdoc method
+       * @name lbServices.Friend#removeById
+       * @methodOf lbServices.Friend
+       *
+       * @description
+       *
+       * Delete a model instance by id from the data source.
+       *
+       * @param {Object=} parameters Request parameters.
+       *
+       *  - `id` – `{*}` - Model id
+       *
+       * @param {function(Object,Object)=} successCb
+       *   Success callback with two arguments: `value`, `responseHeaders`.
+       *
+       * @param {function(Object)=} errorCb Error callback with one argument:
+       *   `httpResponse`.
+       *
+       * @returns {Object} An empty reference that will be
+       *   populated with the actual data once the response is returned
+       *   from the server.
+       *
+       * This method returns no data.
+       */
+      R["removeById"] = R["deleteById"];
+
+
+      /**
+       * @ngdoc property
+       * @name lbServices.Friend#modelName
+       * @propertyOf lbServices.Friend
+       * @description
+       * The name of the model represented by this $resource,
+       * i.e. `Friend`.
+       */
+      R.modelName = "Friend";
+
+
+      /**
+       * @ngdoc method
+       * @name lbServices.Friend#sender
+       * @methodOf lbServices.Friend
+       *
+       * @description
+       *
+       * Fetches belongsTo relation sender.
+       *
+       * @param {Object=} parameters Request parameters.
+       *
+       *  - `id` – `{*}` - PersistedModel id
+       *
+       *  - `refresh` – `{boolean=}` -
+       *
+       * @param {function(Object,Object)=} successCb
+       *   Success callback with two arguments: `value`, `responseHeaders`.
+       *
+       * @param {function(Object)=} errorCb Error callback with one argument:
+       *   `httpResponse`.
+       *
+       * @returns {Object} An empty reference that will be
+       *   populated with the actual data once the response is returned
+       *   from the server.
+       *
+       * <em>
+       * (The remote method definition does not provide any description.
+       * This usually means the response is a `UserModel` object.)
+       * </em>
+       */
+      R.sender = function() {
+        var TargetResource = $injector.get("UserModel");
+        var action = TargetResource["::get::Friend::sender"];
+        return action.apply(R, arguments);
+      };
+
+      /**
+       * @ngdoc method
+       * @name lbServices.Friend#receiver
+       * @methodOf lbServices.Friend
+       *
+       * @description
+       *
+       * Fetches belongsTo relation receiver.
+       *
+       * @param {Object=} parameters Request parameters.
+       *
+       *  - `id` – `{*}` - PersistedModel id
+       *
+       *  - `refresh` – `{boolean=}` -
+       *
+       * @param {function(Object,Object)=} successCb
+       *   Success callback with two arguments: `value`, `responseHeaders`.
+       *
+       * @param {function(Object)=} errorCb Error callback with one argument:
+       *   `httpResponse`.
+       *
+       * @returns {Object} An empty reference that will be
+       *   populated with the actual data once the response is returned
+       *   from the server.
+       *
+       * <em>
+       * (The remote method definition does not provide any description.
+       * This usually means the response is a `UserModel` object.)
+       * </em>
+       */
+      R.receiver = function() {
+        var TargetResource = $injector.get("UserModel");
+        var action = TargetResource["::get::Friend::receiver"];
         return action.apply(R, arguments);
       };
 

@@ -48,5 +48,9 @@
   "ChatMessage": {
     "dataSource": "db",
     "public": true
+  },
+  "Friend": {
+    "dataSource": "db",
+    "public": true
   }
 }
