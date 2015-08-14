@@ -12,7 +12,7 @@ module.exports = function ( app ) {
               '$mdDialog',
               '$state',
               'Room',
-              'Friend',
+              'chatback.chat.FriendManager',
               'LoopBackAuth',
               'chatback.loopback.Subscribe'];
 
@@ -25,7 +25,7 @@ module.exports = function ( app ) {
                        $mdDialog,
                        $state,
                        Room,
-                       Friend,
+                       fm,
                        Auth,
                        Subscriber ) {
     var vm = this;
@@ -126,7 +126,7 @@ module.exports = function ( app ) {
         }
       });
 
-      vm.friends = Friend.my();
+      vm.friends = fm.fetch();
     };
     activate();
   }

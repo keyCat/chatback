@@ -1,7 +1,7 @@
 <div layout="column" flex>
   <md-content class="chat-messages-content" flex>
     <md-list class="chat-messages-list">
-      <md-list-item ng-repeat="m in roomVm.messages">
+      <md-list-item ng-repeat="m in roomVm.messages" ng-click="roomVm.triggerUserDialog(m, $event);">
         <div class="md-list-item-text">
           <h3>{{m.username}} <span class="chat-messages-list-date">{{m.sentTs | date:'hh:mm'}}</span></h3>
 

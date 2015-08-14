@@ -5,10 +5,16 @@ module.exports = function ( app ) {
   var fullname = app.name + '.' + controllername;
   /*jshint validthis: true */
 
-  var deps = ['$scope', '$state', 'resolvedRoom', 'chatback.loopback.Subscribe', 'chatback.chat.RoomManager'];
+  var deps = ['$scope', '$state', '$mdDialog', 'resolvedRoom', 'LoopBackAuth', 'chatback.chat.RoomManager'];
 
-  function controller( $scope, $state, resolvedRoom, subscriber, rm ) {
+  function controller( $scope, $state, $mdDialog, resolvedRoom, Auth, rm ) {
     var vm = this;
+    var userDialogSettings = {
+      controller: app.name + '.UserDialogCtrl as vm',
+      template: require('../views/user.dialog.html'),
+      parent: angular.element(document.body)
+    };
+
     vm.controllername = fullname;
     vm.chat = rm.getChat(resolvedRoom.id);
     vm.messages = [];
@@ -23,6 +29,15 @@ module.exports = function ( app ) {
         .then(function () {
           vm.message = '';
         });
+    };
+
+    vm.triggerUserDialog = function ( message, evt ) {
+      if ( Auth.currentUserId !== message.userId ) {
+        $mdDialog.show(angular.extend(userDialogSettings, {
+          targetEvent: evt,
+          locals: {message: message}
+        }));
+      }
     };
 
     var activate = function () {

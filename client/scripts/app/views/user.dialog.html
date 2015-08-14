@@ -1,0 +1,13 @@
+<md-dialog aria-label="User" class="dialog-3">
+    <md-dialog-content>
+      <h3>{{vm.message.username}} says</h3>
+      <blockquote class="md-body-2">
+        <em>{{vm.message.message}}</em>
+      </blockquote>
+
+      <div class="md-actions" layout="row">
+        <md-button type="submit" ng-click="vm.addToFriends();" class="md-primary md-raised" tabindex="2">Add as Buddy</md-button>
+        <md-button type="button" ng-click="vm.cancel()" tabindex="1">Close</md-button>
+      </div>
+    </md-dialog-content>
+</md-dialog>
