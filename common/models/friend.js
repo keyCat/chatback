@@ -1,29 +1,6 @@
 var loopback = require('loopback');
 
 module.exports = function ( Friend ) {
-  Friend.observe('access', function ( ctx, next ) {
-    var userId = loopback.getCurrentContext().active.accessToken.userId;
-    var or = [
-      {'senderId': userId},
-      {'receiverId': userId}
-    ];
-
-    // force restrict find only to records that involves current user
-    if ( !Object.keys(ctx.query).length ) {
-      ctx.query.where = {
-        or: or
-      };
-    } else {
-      if ( ctx.query.where && ctx.query.where.id ) {
-        var id = ctx.query.where.id;
-        delete ctx.query.where.id;
-        ctx.query.where.and = [{id: id}, {or: or}]
-
-      }
-    }
-    next();
-  });
-
   Friend.observe('before save', function ( ctx, next ) {
     var instance = ctx.instance;
 
@@ -96,27 +73,34 @@ module.exports = function ( Friend ) {
     var UserModel = Friend.app.models.UserModel;
     var userId = loopback.getCurrentContext().active.accessToken.userId;
 
-    Friend.find({include: ['sender', 'receiver']}, function ( err, friends ) {
-      var response = [];
-      var mapUser = function ( user ) {
-        return {
-          id: user.id,
-          username: user.username
+    Friend.find(
+      {
+        where: {
+          or: [{'senderId': userId}, {'receiverId': userId}]
+        },
+        include: ['sender', 'receiver']
+      }
+      , function ( err, friends ) {
+        var response = [];
+        var mapUser = function ( user ) {
+          return {
+            id: user.id,
+            username: user.username
+          };
         };
-      };
 
-      response = friends.map(function ( val ) {
-        var f = JSON.parse(JSON.stringify(val));
-        return {
-          id: f.id,
-          sendTs: f.sendTs,
-          status: f.status,
-          user: f.senderId.toString() === userId.toString() ? mapUser(f.receiver) : mapUser(f.sender)
-        };
+        response = friends.map(function ( val ) {
+          var f = JSON.parse(JSON.stringify(val));
+          return {
+            id: f.id,
+            sendTs: f.sendTs,
+            status: f.status,
+            user: f.senderId.toString() === userId.toString() ? mapUser(f.receiver) : mapUser(f.sender)
+          };
+        });
+
+        next(err, response);
       });
-
-      next(err, response);
-    });
   };
 
   Friend.remoteMethod('my', {
