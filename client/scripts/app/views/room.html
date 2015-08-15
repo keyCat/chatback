@@ -15,6 +15,7 @@
 
   <form name="roomVm.sendMessageForm" class="chat-form">
     <md-input-container layout="row" class="md-whiteframe-z3" md-no-float>
+      <img ng-src="{{vm.user.avatar}}?d=wavatar" class="md-avatar"/>
       <div class="textarea-wrapper" flex-order="1">
         <textarea rows="1" ng-model="roomVm.message" placeholder="Chat in {{vm.$state.current.data.title}}..."></textarea>
       </div>
