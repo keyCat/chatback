@@ -23,11 +23,14 @@ module.exports = function ( namespace ) {
       resolve: {
         authentication: ['$q', '$state', 'LoopBackAuth', function ( $q, $state, Auth ) {
           var deffered = $q.defer();
-          if ( Auth.accessTokenId && Auth.currentUserId ) {
-            deffered.reject();
-          } else {
-            deffered.resolve();
-          }
+
+          $q.when(Auth.getCachedCurrent).then(function (u) {
+            if (u) {
+              deffered.reject();
+            } else {
+              deffered.resolve();
+            }
+          });
 
           return deffered.promise.catch(function () {
             $state.go('app.home');

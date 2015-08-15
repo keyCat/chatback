@@ -28,15 +28,21 @@ module.exports = function ( namespace ) {
           }],
 
           authentication: ['$q', '$state', 'UserModel', 'LoopBackAuth', function ( $q, $state, User, Auth ) {
+            var deferred = $q.defer();
 
-            return User.getCurrent(function ( user ) {
+            User.getCurrent(function ( user ) {
                 var at = Auth.accessTokenId;
                 Auth.clearUser();
                 Auth.setUser(at, user.id, user);
+                deferred.resolve();
               },
               function ( headers ) {
-                $state.go('auth.login');
+                deferred.reject();
               });
+
+            return deferred.promise.catch(function () {
+              $state.go('auth.login');
+            });
           }]
         }
       })
