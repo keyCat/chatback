@@ -6,7 +6,10 @@
   "options": {
     "validateUpsert": true
   },
-  "properties": {},
+  "properties": {
+    "hidden": ["password"],
+    "protected": ["email"]
+  },
   "validations": [],
   "relations": {
     "rooms": {
