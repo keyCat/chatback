@@ -8,33 +8,30 @@ module.exports = function ( ChatMessage ) {
 
     ctx.instance.userId = userId;
     if ( ctx.isNewInstance ) {
-      ctx.instance.sentTs = Date.now();
-      ChatMessage.app.models.UserModel.findById(userId, function ( err, user ) {
-        if ( err ) return next(err);
-        if ( user ) {
-          ctx.instance.setAttribute('username', user.username);
-          ctx.instance.setAttribute('avatar', user.avatar);
-          next();
-        } else {
-          next(new Error('No associated user.'))
-        }
-      });
-    } else {
-      next();
+      ctx.instance.setAttribute('sentTs', Date.now());
     }
+
+    next();
   });
 
   ChatMessage.observe('after save', function ( ctx, next ) {
     var io = ChatMessage.app.io;
     var instance = ctx.instance;
+
     var options = {
       modelName: ChatMessage.modelName,
       modelId: instance.id,
       method: ctx.isNewInstance ? 'POST' : 'PUT',
       data: instance
     };
-    pubsub.publishTo(io, socketHandler.SOCKET_ROOM_ALIAS + instance.chatId, options);
 
-    next();
+    instance.user({fields: {id: true, username: true, avatar: true}}, function ( err, user ) {
+      if ( err ) return next(err);
+      instance.setAttribute('username', user.username);
+      instance.setAttribute('avatar', user.avatar);
+      pubsub.publishTo(io, socketHandler.SOCKET_ROOM_ALIAS + instance.chatId, options);
+
+      next();
+    });
   });
 };
