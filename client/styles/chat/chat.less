@@ -5,6 +5,8 @@
 }
 
 .chat-messages-list {
+  padding-top: 0;
+
   md-list-item > .md-avatar:first-child, md-list-item .md-list-item-inner > .md-avatar:first-child {
     margin-top: -2px;
     margin-right: 20px;
@@ -15,6 +17,7 @@
     font-size: 12px;
     letter-spacing: 0.02em;
     color: #99aab5;
+    margin-left: 5px;
   }
 
   md-list-item.md-no-proxy, md-list-item .md-no-style {
@@ -23,14 +26,20 @@
     padding-bottom: 20px;
   }
 
+  .md-clickable > .md-button {
+
+  }
+
   .md-list-item-text {
     h1, h2, h3, h4, h5, h6 {
+      line-height: 1;
       font-weight: normal;
       margin-bottom: 0;
       margin-top: 0;
     }
 
     p {
+      line-height: 20px;
       font-size: 14px;
       margin-top: 6px;
       margin-bottom: 0;
