@@ -49,9 +49,6 @@ module.exports = function ( app ) {
 
       if ( this._active && msg ) {
         msg = msg.toString();
-
-        // strip spaces (sorry, ASCII art)
-        msg = msg.replace(/^\s+/g, '').replace(/\s+/g, ' ').replace(/\s+$/g, '');
         message = ChatResource.messages.create({id: this.room.chats.id}, {message: msg}).$promise;
       } else {
         deferred.reject();
