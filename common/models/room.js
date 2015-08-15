@@ -29,7 +29,7 @@ module.exports = function ( Room ) {
         var userIds = socketHandler.users.findInRoom(id, true);
         socketHandler.joinRoom(userId, id, converted.chats.id);
 
-        UserModel.find({where: {id: {inq: userIds}}, fields: {id: true, username: true}}, function ( err, users ) {
+        UserModel.find({where: {id: {inq: userIds}}, fields: {id: true, username: true, avatar: true}}, function ( err, users ) {
           converted.users = users;
           response = converted;
           next(err, response);

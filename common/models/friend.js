@@ -85,7 +85,8 @@ module.exports = function ( Friend ) {
         var mapUser = function ( user ) {
           return {
             id: user.id,
-            username: user.username
+            username: user.username,
+            avatar: user.avatar
           };
         };
 

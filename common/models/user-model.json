@@ -7,8 +7,20 @@
     "validateUpsert": true
   },
   "properties": {
-    "hidden": ["password"],
-    "protected": ["email"]
+    "avatar": {
+      "type": "string",
+      "required": false
+    },
+    "hidden": {
+      "type": [
+        "password"
+      ]
+    },
+    "protected": {
+      "type": [
+        "email"
+      ]
+    }
   },
   "validations": [],
   "relations": {

@@ -23,6 +23,7 @@
     <md-list>
       <md-subheader>Buddies</md-subheader>
       <md-list-item ng-repeat="friend in vm.friends" ng-click="noop();">
+        <img class="md-avatar" ng-src="{{friend.user.avatar}}?d=wavatar" alt=""/>
         <p>{{friend.user.username}}</p>
 
         <md-menu>

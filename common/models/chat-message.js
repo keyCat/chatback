@@ -13,6 +13,7 @@ module.exports = function ( ChatMessage ) {
         if ( err ) return next(err);
         if ( user ) {
           ctx.instance.setAttribute('username', user.username);
+          ctx.instance.setAttribute('avatar', user.avatar);
           next();
         } else {
           next(new Error('No associated user.'))
