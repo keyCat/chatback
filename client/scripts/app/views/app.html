@@ -28,24 +28,28 @@
 
     <!-- Buddy List-->
 
-    <md-list ng-controller="chatback.app.SidenavFriendsCtrl as friendsVm">
+    <md-list id="buddy-list" ng-controller="chatback.app.SidenavFriendsCtrl as friendsVm">
       <md-subheader>Buddies</md-subheader>
       <md-list-item ng-repeat="friend in friendsVm.friends" layout-margin>
         <img class="md-avatar" ng-src="{{friend.user.avatar}}?d=wavatar" alt=""/>
 
-        <p>{{friend.user.username}}</p>
+        <div ng-switch="friend.status" style="width: 100%;">
+          <div ng-switch-when="0" layout="row" layout-align="space-between center">
+            <p><strong>{{friend.user.username}}</strong> <br/> <span class="md-caption">wants to add you</span></p>
 
-        <div ng-switch="friend.status">
-          <div ng-switch-when="0">
-            <md-button class="md-icon-button">
-              <ng-md-icon icon="close"></ng-md-icon>
-            </md-button>
-            <md-button class="md-icon-button">
-              <ng-md-icon icon="check"></ng-md-icon>
-            </md-button>
+            <div layout="row">
+              <md-button class="md-icon-button">
+                <ng-md-icon icon="close"></ng-md-icon>
+              </md-button>
+              <md-button class="md-icon-button">
+                <ng-md-icon icon="check"></ng-md-icon>
+              </md-button>
+            </div>
           </div>
 
-          <div ng-switch-when="1">
+          <div ng-switch-when="1" layout="row" layout-align="space-between center">
+            <p>{{friend.user.username}}</p>
+
             <md-menu>
               <md-button class="md-icon-button" ng-click="friendsVm.openFriendMenu($mdOpenMenu, $event);">
                 <ng-md-icon md-menu-origin icon="more_vert"></ng-md-icon>
