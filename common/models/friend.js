@@ -61,25 +61,27 @@ module.exports = function ( Friend ) {
   Friend.observe('after save', function ( ctx, next ) {
     var userId = loopback.getCurrentContext().active.accessToken.userId;
 
-    Friend.findById(ctx.instance.senderId, {include: ['sender', 'receiver']}, function ( err, instance ) {
+    Friend.findById(ctx.instance.id, {include: ['sender', 'receiver']}, function ( err, instance ) {
       if ( err ) console.error(err);
-      var senderPayload = {};
-      var receiverPayload = {};
-      var convInstance = JSON.parse(JSON.stringify(instance));
-      var opts = {
-        modelName: Friend.modelName,
-        modelId: ctx.instance.id,
-        method: ctx.isNewInstance ? 'POST' : 'PUT'
-      };
+      if ( instance ) {
+        var senderPayload = {};
+        var receiverPayload = {};
+        var convInstance = JSON.parse(JSON.stringify(instance));
+        var opts = {
+          modelName: Friend.modelName,
+          modelId: ctx.instance.id,
+          method: ctx.isNewInstance ? 'POST' : 'PUT'
+        };
 
-      senderPayload = mapFriend(convInstance, mapUser(convInstance.receiver));
-      receiverPayload = mapFriend(convInstance, mapUser(convInstance.sender));
+        senderPayload = mapFriend(convInstance, mapUser(convInstance.receiver));
+        receiverPayload = mapFriend(convInstance, mapUser(convInstance.sender));
 
-      // publish to sender
-      pubsub.publishTo(Friend.app.io, socketHandler.USER_ROOM_ALIAS + ctx.instance.senderId, extend(opts, {data: senderPayload}));
+        // publish to sender
+        pubsub.publishTo(Friend.app.io, socketHandler.USER_ROOM_ALIAS + ctx.instance.senderId, extend(opts, {data: senderPayload}));
 
-      // publish to receiver
-      pubsub.publishTo(Friend.app.io, socketHandler.USER_ROOM_ALIAS + ctx.instance.receiverId, extend(opts, {data: receiverPayload}));
+        // publish to receiver
+        pubsub.publishTo(Friend.app.io, socketHandler.USER_ROOM_ALIAS + ctx.instance.receiverId, extend(opts, {data: receiverPayload}));
+      }
     });
 
     next();
