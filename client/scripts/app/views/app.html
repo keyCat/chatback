@@ -1,8 +1,8 @@
 <div layout="row" flex>
   <md-sidenav layout="column" class="md-sidenav-left md-whiteframe-z1" md-component-id="sidenav-left" md-is-locked-open="vm.$mdMedia('gt-md')">
     <md-toolbar class="md-tall md-hue-2" id="user-toolbar" layout-padding>
-      <img class="toolbar-background" ng-src="{{vm.user.avatar}}?d=identicon&s=350&f=y" alt=""/>
-      <span flex></span>
+      <img class="toolbar-background" ng-src="{{vm.user.avatar}}?d=identicon&s=350&f=y" alt=""/> <span flex></span>
+
       <div class="md-toolbar-tools">
         <h1>{{vm.user.username}}</h1>
       </div>
@@ -23,11 +23,18 @@
     <md-divider></md-divider>
     <md-list>
       <md-subheader>Buddies</md-subheader>
-      <md-list-item ng-repeat="friend in vm.friends" ng-click="noop();">
+      <md-list-item ng-repeat="friend in vm.friends" layout-margin>
         <img class="md-avatar" ng-src="{{friend.user.avatar}}?d=wavatar" alt=""/>
         <p>{{friend.user.username}}</p>
 
-        <md-menu>
+        <md-button class="md-icon-button" ng-if="friend.status === 0">
+          <ng-md-icon icon="close"></ng-md-icon>
+        </md-button>
+        <md-button class="md-icon-button" ng-if="friend.status === 0">
+          <ng-md-icon icon="check"></ng-md-icon>
+        </md-button>
+
+        <md-menu ng-if="friend.status === 1">
           <md-button class="md-icon-button" ng-click="vm.openFriendMenu($mdOpenMenu, $event);">
             <ng-md-icon md-menu-origin icon="more_vert"></ng-md-icon>
           </md-button>
