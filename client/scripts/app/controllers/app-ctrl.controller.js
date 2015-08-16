@@ -5,134 +5,21 @@ module.exports = function ( app ) {
   var fullname = app.name + '.' + controllername;
   /*jshint validthis: true */
 
-  var deps = ['$scope',
-              '$mdMedia',
-              '$mdUtil',
-              '$mdSidenav',
-              '$mdDialog',
-              '$state',
-              'Room',
-              'chatback.chat.FriendManager',
-              'LoopBackAuth',
-              'chatback.loopback.Subscribe'];
+  var deps = ['$mdMedia', '$mdUtil', '$mdSidenav', '$state', 'LoopBackAuth'];
 
-  /*TODO: separate into controllers this godly creature*/
-
-  function controller( $scope,
-                       $mdMedia,
-                       $mdUtil,
-                       $mdSidenav,
-                       $mdDialog,
-                       $state,
-                       Room,
-                       fm,
-                       Auth,
-                       Subscriber ) {
+  function controller( $mdMedia, $mdUtil, $mdSidenav, $state, Auth ) {
     var vm = this;
-    var createRoomDialogSettings = {
-      controller: app.name + '.CreateRoomDialogCtrl as vm',
-      template: require('../views/create-room.dialog.html'),
-      parent: angular.element(document.body)
-    };
     vm.controllername = fullname;
-    vm.rooms = [];
-    vm.friends = [];
-    vm.progress = {};
     vm.$state = $state;
     vm.user = Auth.currentUserData;
+    vm.sidenavLeftID = 'sidenav-left';
 
-    function onRoomCreate( room ) {
-      vm.rooms.push(room);
-      subscribeToUpdates(room);
-      $scope.$apply();
-    }
-
-    function onRoomUpdate( room ) {
-      for ( var i = 0; i < vm.rooms.length; i++ ) {
-        if ( vm.rooms[i].id === room.id ) {
-          vm.rooms[i].name = room.name;
-          break;
-        }
-      }
-      $scope.$apply();
-    }
-
-    function onRoomDelete( roomId ) {
-      // TODO: Deletion code with soft user disconnect
-      for ( var i = 0; i < vm.rooms.length; i++ ) {
-        if ( vm.rooms[i].id === roomId ) {
-          vm.rooms.splice(i, 1);
-          break;
-        }
-      }
-      $scope.$apply();
-    }
-
-    function onNewFriend() {
-      vm.friends = fm.getList();
-      $scope.$apply();
-    }
-
-    function subscribeToUpdates( room ) {
-      Subscriber.subscribe({
-        modelName: Room.modelName,
-        method: 'PUT',
-        modelId: room.id
-      }, onRoomUpdate);
-
-      Subscriber.subscribe({
-        modelName: Room.modelName,
-        method: 'DELETE',
-        modelId: room.id
-      }, onRoomDelete);
-    }
-
-    function buildToggler( navID ) {
-      var debounceFn = $mdUtil.debounce(function () {
-        $mdSidenav(navID).toggle();
-      }, 200);
-      return debounceFn;
-    }
-
-    vm.openFriendMenu = function ( $mdOpenMenu, evt ) {
-      $mdOpenMenu(evt);
-    };
-
-    vm.toggleMainSidenav = buildToggler('sidenav-left');
-
-    vm.showProgress = function ( target ) {
-      vm.progress[target] = true;
-    };
-    vm.hideProgress = function ( target ) {
-      vm.progress[target] = false;
-    };
-
-    vm.triggerCreateRoomDialog = function ( evt ) {
-      $mdDialog.show(angular.extend(createRoomDialogSettings, {targetEvent: evt}));
-    };
-
-    vm.join = function ( room ) {
-      $state.go('app.room', {name: room.name});
-    };
+    vm.toggleMainSidenav = $mdUtil.debounce(function () {
+      $mdSidenav(vm.sidenavLeftID).toggle();
+    }, 200);
 
     var activate = function () {
-      vm.showProgress('rooms');
       vm.$mdMedia = $mdMedia;
-      vm.rooms = Room.find(function ( resource ) {
-        vm.hideProgress('rooms');
-
-        Subscriber.subscribe({
-          modelName: Room.modelName,
-          method: 'POST'
-        }, onRoomCreate);
-
-        for ( var i = 0; i < resource.length; i++ ) {
-          subscribeToUpdates(resource[i]);
-        }
-      });
-
-      vm.friends = fm.fetch();
-      fm.onNewFriend(onNewFriend);
     };
     activate();
   }

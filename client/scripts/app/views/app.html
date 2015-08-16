@@ -1,54 +1,69 @@
 <div layout="row" flex>
-  <md-sidenav layout="column" class="md-sidenav-left md-whiteframe-z1" md-component-id="sidenav-left" md-is-locked-open="vm.$mdMedia('gt-md')">
+
+  <!-- Left (main) Sidenav -->
+
+  <md-sidenav flex layout="column" class="md-sidenav-left md-whiteframe-z3" md-component-id="sidenav-left" md-is-locked-open="vm.$mdMedia('gt-md')">
     <md-toolbar class="md-tall md-hue-2" id="user-toolbar" layout-padding>
       <img class="toolbar-background" ng-src="{{vm.user.avatar}}?d=identicon&s=350&f=y" alt=""/> <span flex></span>
-
       <div class="md-toolbar-tools">
         <h1>{{vm.user.username}}</h1>
       </div>
     </md-toolbar>
 
-    <md-list id="rooms-list" flex>
+    <!-- Rooms List -->
+
+    <md-list id="rooms-list" flex ng-controller="chatback.app.SidenavRoomsCtrl as roomsVm">
       <div layout="row" layout-align="space-between start" id="rooms-list-header">
         <md-subheader>Rooms</md-subheader>
-        <md-button class="md-icon-button" ng-hide="vm.progress.rooms" ng-click="vm.triggerCreateRoomDialog($event);">
+        <md-button class="md-icon-button" ng-hide="roomsVm.progress.rooms" ng-click="roomsVm.triggerCreateRoomDialog($event);">
           <ng-md-icon icon="add"></ng-md-icon>
         </md-button>
       </div>
-      <md-progress-linear ng-show="vm.progress.rooms" md-mode="indeterminate" layout-padding></md-progress-linear>
-      <md-list-item ng-repeat="room in vm.rooms" class="md-body-1" ng-click="vm.join(room)">
+      <md-progress-linear ng-show="sideRoomVm.progress.rooms" md-mode="indeterminate" layout-padding></md-progress-linear>
+      <md-list-item ng-repeat="room in roomsVm.rooms" class="md-body-1" ng-click="roomsVm.join(room)">
         <p class="md-primary">{{room.name}}</p>
       </md-list-item>
     </md-list>
     <md-divider></md-divider>
-    <md-list>
+
+    <!-- Buddy List-->
+
+    <md-list ng-controller="chatback.app.SidenavFriendsCtrl as friendsVm">
       <md-subheader>Buddies</md-subheader>
-      <md-list-item ng-repeat="friend in vm.friends" layout-margin>
+      <md-list-item ng-repeat="friend in friendsVm.friends" layout-margin>
         <img class="md-avatar" ng-src="{{friend.user.avatar}}?d=wavatar" alt=""/>
+
         <p>{{friend.user.username}}</p>
 
-        <md-button class="md-icon-button" ng-if="friend.status === 0">
-          <ng-md-icon icon="close"></ng-md-icon>
-        </md-button>
-        <md-button class="md-icon-button" ng-if="friend.status === 0">
-          <ng-md-icon icon="check"></ng-md-icon>
-        </md-button>
+        <div ng-switch="friend.status">
+          <div ng-switch-when="0">
+            <md-button class="md-icon-button">
+              <ng-md-icon icon="close"></ng-md-icon>
+            </md-button>
+            <md-button class="md-icon-button">
+              <ng-md-icon icon="check"></ng-md-icon>
+            </md-button>
+          </div>
 
-        <md-menu ng-if="friend.status === 1">
-          <md-button class="md-icon-button" ng-click="vm.openFriendMenu($mdOpenMenu, $event);">
-            <ng-md-icon md-menu-origin icon="more_vert"></ng-md-icon>
-          </md-button>
+          <div ng-switch-when="1">
+            <md-menu>
+              <md-button class="md-icon-button" ng-click="friendsVm.openFriendMenu($mdOpenMenu, $event);">
+                <ng-md-icon md-menu-origin icon="more_vert"></ng-md-icon>
+              </md-button>
+              <md-menu-content>
+                <md-menu-item>
+                  <md-button>Remove</md-button>
+                </md-menu-item>
+              </md-menu-content>
+            </md-menu>
+          </div>
+        </div>
 
-          <md-menu-content>
-            <md-menu-item>
-              <md-button>Remove</md-button>
-            </md-menu-item>
-          </md-menu-content>
-        </md-menu>
       </md-list-item>
     </md-list>
   </md-sidenav>
 
+  <!-- Main view -->
   <div layout="column" flex>
     <md-toolbar class="md-whiteframe-z1">
       <div class="md-toolbar-tools">
