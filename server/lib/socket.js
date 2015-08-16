@@ -2,6 +2,7 @@ var auth = require('socketio-auth');
 var pubsub = require('./pubsub');
 
 var SOCKET_ROOM_ALIAS = '/chat/';
+var USER_ROOM_ALIAS = '/user/';
 
 /**
  * Activate authentication middleware on socket.io instance
@@ -18,6 +19,7 @@ function socketHandler( io, app ) {
 }
 
 socketHandler.SOCKET_ROOM_ALIAS = SOCKET_ROOM_ALIAS;
+socketHandler.USER_ROOM_ALIAS = USER_ROOM_ALIAS;
 
 /**
  * storage for connected userId/socket {id: 1, socket: Socket}
@@ -165,6 +167,7 @@ function postAuthenticate( app, socket, data ) {
     socket.client.data.isIdentified = !!user;
   });
 
+  socket.join(USER_ROOM_ALIAS + data.userId);
   pubsub._subscribeToPast(socket);
   socketHandler.users.push({id: data.userId, socket: socket});
   socket.on('disconnect', function () {

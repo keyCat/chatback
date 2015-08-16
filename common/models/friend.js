@@ -1,6 +1,26 @@
 var loopback = require('loopback');
+var pubsub = require('../../server/lib/pubsub');
+var socketHandler = require('../../server/lib/socket');
+var extend = require('extend');
 
 module.exports = function ( Friend ) {
+  var mapUser = function ( user ) {
+    return {
+      id: user.id,
+      username: user.username,
+      avatar: user.avatar
+    };
+  };
+
+  var mapFriend = function ( friend, user ) {
+    return {
+      id: friend.id,
+      sendTs: friend.sendTs,
+      status: friend.status,
+      user: user
+    };
+  };
+
   Friend.observe('before save', function ( ctx, next ) {
     var instance = ctx.instance;
 
@@ -38,6 +58,33 @@ module.exports = function ( Friend ) {
     }
   });
 
+  Friend.observe('after save', function ( ctx, next ) {
+    var userId = loopback.getCurrentContext().active.accessToken.userId;
+
+    Friend.findById(ctx.instance.senderId, {include: ['sender', 'receiver']}, function ( err, instance ) {
+      if ( err ) console.error(err);
+      var senderPayload = {};
+      var receiverPayload = {};
+      var convInstance = JSON.parse(JSON.stringify(instance));
+      var opts = {
+        modelName: Friend.modelName,
+        modelId: ctx.instance.id,
+        method: ctx.isNewInstance ? 'POST' : 'PUT'
+      };
+
+      senderPayload = mapFriend(convInstance, mapUser(convInstance.receiver));
+      receiverPayload = mapFriend(convInstance, mapUser(convInstance.sender));
+
+      // publish to sender
+      pubsub.publishTo(Friend.app.io, socketHandler.USER_ROOM_ALIAS + ctx.instance.senderId, extend(opts, {data: senderPayload}));
+
+      // publish to receiver
+      pubsub.publishTo(Friend.app.io, socketHandler.USER_ROOM_ALIAS + ctx.instance.receiverId, extend(opts, {data: receiverPayload}));
+    });
+
+    next();
+  });
+
   /**
    * Accept friend request
    * @param {id} id Request id
@@ -70,7 +117,6 @@ module.exports = function ( Friend ) {
    * */
 
   Friend.my = function ( next ) {
-    var UserModel = Friend.app.models.UserModel;
     var userId = loopback.getCurrentContext().active.accessToken.userId;
 
     Friend.find(
@@ -82,22 +128,11 @@ module.exports = function ( Friend ) {
       }
       , function ( err, friends ) {
         var response = [];
-        var mapUser = function ( user ) {
-          return {
-            id: user.id,
-            username: user.username,
-            avatar: user.avatar
-          };
-        };
 
         response = friends.map(function ( val ) {
           var f = JSON.parse(JSON.stringify(val));
-          return {
-            id: f.id,
-            sendTs: f.sendTs,
-            status: f.status,
-            user: f.senderId.toString() === userId.toString() ? mapUser(f.receiver) : mapUser(f.sender)
-          };
+          var user = f.senderId.toString() === userId.toString() ? mapUser(f.receiver) : mapUser(f.sender);
+          return mapFriend(f, user);
         });
 
         next(err, response);
