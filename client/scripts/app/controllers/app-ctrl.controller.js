@@ -68,6 +68,11 @@ module.exports = function ( app ) {
       $scope.$apply();
     }
 
+    function onNewFriend() {
+      vm.friends = fm.getList();
+      $scope.$apply();
+    }
+
     function subscribeToUpdates( room ) {
       Subscriber.subscribe({
         modelName: Room.modelName,
@@ -127,6 +132,7 @@ module.exports = function ( app ) {
       });
 
       vm.friends = fm.fetch();
+      fm.onNewFriend(onNewFriend);
     };
     activate();
   }

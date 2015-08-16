@@ -7,7 +7,8 @@ module.exports = function ( app ) {
 
   function service( FriendResource, subscriber ) {
     var Friends = {
-      list: []
+      list: [],
+      newFriendCbs: []
     };
 
     subscriber.subscribe({
@@ -15,6 +16,10 @@ module.exports = function ( app ) {
       method: 'POST'
     }, function ( resource ) {
       // TODO: save new friend request in the list
+      Friends.list.push(resource);
+      for ( var i = 0; i < Friends.newFriendCbs.length; i++ ) {
+        Friends.newFriendCbs[i](resource);
+      }
     });
 
     Friends.fetch = function () {
@@ -32,6 +37,12 @@ module.exports = function ( app ) {
       return FriendResource.create({
         receiverId: receiverId
       });
+    };
+
+    Friends.onNewFriend = function ( cb ) {
+      if ( typeof cb === 'function' ) {
+        this.newFriendCbs.push(cb);
+      }
     };
 
     Friends.getList = function () {
