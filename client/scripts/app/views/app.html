@@ -5,6 +5,7 @@
   <md-sidenav flex layout="column" class="md-sidenav-left md-whiteframe-z3" md-component-id="sidenav-left" md-is-locked-open="vm.$mdMedia('gt-md')">
     <md-toolbar class="md-tall md-hue-2" id="user-toolbar" layout-padding>
       <img class="toolbar-background" ng-src="{{vm.user.avatar}}?d=identicon&s=350&f=y" alt=""/> <span flex></span>
+
       <div class="md-toolbar-tools">
         <h1>{{vm.user.username}}</h1>
       </div>
@@ -38,10 +39,10 @@
             <p><strong>{{friend.user.username}}</strong> <br/> <span class="md-caption">wants to add you</span></p>
 
             <div layout="row">
-              <md-button class="md-icon-button">
+              <md-button class="md-icon-button" ng-click="friendsVm.remove(friend);">
                 <ng-md-icon icon="close"></ng-md-icon>
               </md-button>
-              <md-button class="md-icon-button">
+              <md-button class="md-icon-button" ng-click="friendsVm.accept(friend);">
                 <ng-md-icon icon="check"></ng-md-icon>
               </md-button>
             </div>
@@ -56,7 +57,7 @@
               </md-button>
               <md-menu-content>
                 <md-menu-item>
-                  <md-button>Remove</md-button>
+                  <md-button ng-click="friendsVm.remove(friend);">Remove</md-button>
                 </md-menu-item>
               </md-menu-content>
             </md-menu>

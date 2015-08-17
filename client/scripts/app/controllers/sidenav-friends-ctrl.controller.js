@@ -29,6 +29,14 @@ module.exports = function ( app ) {
       $mdOpenMenu(evt);
     };
 
+    vm.accept = function ( f ) {
+      fm.accept(f.id);
+    };
+
+    vm.remove = function ( f ) {
+      fm.remove(f.id);
+    };
+
     var activate = function () {
       vm.friends = fm.fetch();
       fm.onNewFriend(onNewFriend);

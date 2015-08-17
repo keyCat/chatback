@@ -74,11 +74,10 @@ module.exports = function ( app ) {
 
       return FriendResource.my(function ( resource ) {
         if ( resource ) {
-          _self.list.splice(0, _self.list.length);
-          _self.list.concat(resource);
+          _self.list = resource;
 
-          for ( var i = 0; i < resource.length; i++ ) {
-            subscribeToUpdates(resource[i].id);
+          for ( var i = 0; i < _self.list.length; i++ ) {
+            subscribeToUpdates(_self.list[i].id);
           }
         }
 
@@ -86,12 +85,12 @@ module.exports = function ( app ) {
       });
     };
 
-    Friends.confirm = function ( id ) {
-      return FriendResource.accept(id);
+    Friends.accept = function ( id ) {
+      return FriendResource.accept({id: id});
     };
 
-    Friends.reject = function ( id ) {
-      return FriendResource.deleteById(id);
+    Friends.remove = function ( id ) {
+      return FriendResource.removeById({id: id});
     };
 
     Friends.add = function ( receiverId ) {

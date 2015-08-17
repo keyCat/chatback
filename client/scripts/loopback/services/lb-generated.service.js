@@ -5925,7 +5925,7 @@ module.exports = function(app) {
            *
            * @description
            *
-           * Return current user friends
+           * Return list of friend requests and related UserModels for current user
            *
            * @param {Object=} parameters Request parameters.
            *
