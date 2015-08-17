@@ -17,6 +17,8 @@ module.exports = function ( Friend ) {
       id: friend.id,
       sendTs: friend.sendTs,
       status: friend.status,
+      senderId: friend.senderId,
+      receiverId: friend.receiverId,
       user: user
     };
   };
