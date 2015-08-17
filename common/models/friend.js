@@ -87,6 +87,40 @@ module.exports = function ( Friend ) {
     next();
   });
 
+  Friend.observe('before delete', function ( ctx, next ) {
+    var lCtx = loopback.getCurrentContext();
+    var userId = lCtx.active.accessToken.userId;
+    if ( ctx.where && ctx.where.id ) {
+      var id = ctx.where.id;
+      ctx.where.and = [{id: id}, {or: [{'senderId': userId}, {'receiverId': userId}]}];
+      delete ctx.where.id;
+
+      // do this manually, because loopback won't get instance for delete
+      Friend.find(JSON.parse(JSON.stringify(ctx.where)), function ( err, f ) {
+        lCtx.set('instance', f);
+        next();
+      });
+    } else {
+      next();
+    }
+  });
+
+  Friend.observe('after delete', function ( ctx, next ) {
+    var lCtx = loopback.getCurrentContext();
+    var instance = lCtx.get('instance');
+    if ( instance && instance.id ) {
+      var opts = {
+        modelName: Friend.modelName,
+        modelId: instance.id,
+        method: 'DELETE'
+      };
+      pubsub.publishTo(Friend.app.io, socketHandler.USER_ROOM_ALIAS + instance.senderId, opts);
+      pubsub.publishTo(Friend.app.io, socketHandler.USER_ROOM_ALIAS + instance.receiverId, opts);
+    }
+
+    next();
+  });
+
   /**
    * Accept friend request
    * @param {id} id Request id
@@ -113,7 +147,6 @@ module.exports = function ( Friend ) {
     returns: {arg: 'response', type: 'object', root: true},
     http: {path: '/:id/accept', verb: 'put'}
   });
-
   /**
    * Return list of friend requests and related UserModels for current user
    * */
