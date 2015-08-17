@@ -10,10 +10,20 @@
     font-size: 18px;
   }
 }
+
 #buddy-list {
+  min-height: 68px;
   padding-bottom: 0;
 
   .md-avatar {
     flex-shrink: 0;
+  }
+
+  .md-subheader + md-list-item {
+    margin-top: 0;
+  }
+
+  md-list-item:last-child {
+    margin-bottom: 0;
   }
 }
