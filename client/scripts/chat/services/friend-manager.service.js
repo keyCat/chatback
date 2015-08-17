@@ -46,7 +46,7 @@ module.exports = function ( app ) {
       }, function ( resource ) {
         for ( var i = 0; i < Friends.list.length; i++ ) {
           if ( Friends.list[i].id.toString() === id.toString() ) {
-            Friends.list.splice(i);
+            Friends.list.splice(i, 1);
             break;
           }
         }
