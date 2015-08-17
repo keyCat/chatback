@@ -3,9 +3,9 @@ var servicename = 'RoomManager';
 
 module.exports = function ( app ) {
 
-  var dependencies = ['$q', 'Room', app.name + '.Chat', 'chatback.loopback.Subscribe'];
+  var dependencies = ['$q', 'Room', app.name + '.Chat', 'chatback.loopback.Socket'];
 
-  function service( $q, Room, Chat, subscriber ) {
+  function service( $q, Room, Chat, socket ) {
     var RoomManager = {
       connRooms: {
         // roomId/resource pair
@@ -14,6 +14,15 @@ module.exports = function ( app ) {
         // roomId/chat pair
       }
     };
+
+    // ask server to rejoin rooms on reconnect
+    socket.on('reconnect', function () {
+      for ( var id in RoomManager.connRooms ) {
+        if ( RoomManager.connRooms.hasOwnProperty(id) ) {
+          RoomManager.join({id: id});
+        }
+      }
+    });
 
     /**
      * Join a room
@@ -60,7 +69,7 @@ module.exports = function ( app ) {
           join(room);
         } else if ( room.id ) {
           // we have an object with id
-          Room.findById(room.id
+          Room.findById({id: room.id}
             , function ( resource ) {
               if ( resource && resource.$join ) join(resource);
               else deferred.reject(resource);
