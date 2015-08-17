@@ -96,8 +96,13 @@ module.exports = function ( Friend ) {
       delete ctx.where.id;
 
       // do this manually, because loopback won't get instance for delete
-      Friend.find(JSON.parse(JSON.stringify(ctx.where)), function ( err, f ) {
-        lCtx.set('instance', f);
+      Friend.findById(id, function ( err, f ) {
+        if ( f ) {
+          if ( f.senderId.toString() === userId.toString() || f.receiverId.toString() === userId.toString() ) {
+            lCtx.set('instance', f);
+          }
+        }
+
         next();
       });
     } else {
@@ -112,8 +117,10 @@ module.exports = function ( Friend ) {
       var opts = {
         modelName: Friend.modelName,
         modelId: instance.id,
-        method: 'DELETE'
+        method: 'DELETE',
+        data: true
       };
+
       pubsub.publishTo(Friend.app.io, socketHandler.USER_ROOM_ALIAS + instance.senderId, opts);
       pubsub.publishTo(Friend.app.io, socketHandler.USER_ROOM_ALIAS + instance.receiverId, opts);
     }

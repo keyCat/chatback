@@ -17,6 +17,14 @@ module.exports = function ( app ) {
       $scope.$apply();
     }
 
+    function onFriendUpdate() {
+      $scope.$apply();
+    }
+
+    function onFriendDelete() {
+      $scope.$apply();
+    }
+
     vm.openFriendMenu = function ( $mdOpenMenu, evt ) {
       $mdOpenMenu(evt);
     };
@@ -24,6 +32,8 @@ module.exports = function ( app ) {
     var activate = function () {
       vm.friends = fm.fetch();
       fm.onNewFriend(onNewFriend);
+      fm.onFriendUpdate(onFriendUpdate);
+      fm.onFriendDelete(onFriendDelete);
     };
     activate();
   }
