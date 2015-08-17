@@ -18,6 +18,15 @@ module.exports = function ( app ) {
       $mdSidenav(vm.sidenavLeftID).toggle();
     }, 200);
 
+    vm.user.idIs = function ( id ) {
+      console.log(id);
+      if ( id ) {
+        return id.toString() === vm.user.id.toString();
+      } else {
+        return false;
+      }
+    };
+
     var activate = function () {
       vm.$mdMedia = $mdMedia;
     };

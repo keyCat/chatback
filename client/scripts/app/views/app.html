@@ -33,10 +33,9 @@
       <md-subheader>Buddies</md-subheader>
       <md-list-item ng-repeat="friend in friendsVm.friends" layout-margin>
         <img class="md-avatar" ng-src="{{friend.user.avatar}}?d=wavatar" alt=""/>
-
         <div ng-switch="friend.status" style="width: 100%;">
-          <div ng-switch-when="0" layout="row" layout-align="space-between center">
-            <p><strong>{{friend.user.username}}</strong> <br/> <span class="md-caption">wants to add you</span></p>
+          <div ng-switch-when="0" ng-if="vm.user.idIs(friend.receiverId);" layout="row" layout-align="space-between center">
+            <p class="md-body-2"><strong>{{friend.user.username}}</strong> <br/> <span class="md-caption">wants to add you</span></p>
 
             <div layout="row">
               <md-button class="md-icon-button" ng-click="friendsVm.remove(friend);">
@@ -48,8 +47,16 @@
             </div>
           </div>
 
+          <div ng-switch-when="0" ng-if="vm.user.idIs(friend.senderId);" layout="row" layout-align="space-between center">
+            <p class="md-body-2"><strong>{{friend.user.username}}</strong> <br/> <span class="md-caption">request sent</span></p>
+
+            <div layout="row">
+              <md-button ng-click="friendsVm.remove(friend);">Cancel</md-button>
+            </div>
+          </div>
+
           <div ng-switch-when="1" layout="row" layout-align="space-between center">
-            <p>{{friend.user.username}}</p>
+            <p class="md-body-2">{{friend.user.username}}</p>
 
             <md-menu>
               <md-button class="md-icon-button" ng-click="friendsVm.openFriendMenu($mdOpenMenu, $event);">
