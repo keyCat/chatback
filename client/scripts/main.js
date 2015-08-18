@@ -11,14 +11,15 @@ require('angular-material');
 require('angular-resource');
 require('angular-messages');
 require('angular-material-icons');
+require('angularjs-scroll-glue');
 
-var app = angular.module(namespace, ['ngMaterial', 'ngMessages', 'ngMdIcons',
+var app = angular.module(namespace, ['ngMaterial', 'ngMessages', 'ngMdIcons', 'luegg.directives',
   // inject:modules start
                                      require('./app')(namespace).name,
-                                         require('./auth')(namespace).name,
-                                         require('./chat')(namespace).name,
-                                         require('./loopback')(namespace).name
-                                     // inject:modules end
+                                     require('./auth')(namespace).name,
+                                     require('./chat')(namespace).name,
+                                     require('./loopback')(namespace).name
+  // inject:modules end
 ]);
 
 if ( process.env.SENTRY_MODE === 'prod' ) {

@@ -1,8 +1,9 @@
 <div layout="column" flex>
-  <md-content class="chat-messages-content" flex>
+  <md-content class="chat-messages-content" flex scroll-glue>
     <md-list class="chat-messages-list" layout-margin>
       <md-list-item ng-repeat="m in roomVm.messages" ng-click="roomVm.triggerUserDialog(m, $event);">
         <img class="md-avatar" ng-src="{{m.avatar}}?d=wavatar" alt=""/>
+
         <div class="md-list-item-text">
           <h3>{{m.username}} <span class="chat-messages-list-date">{{m.sentTs | date:'hh:mm'}}</span></h3>
 
@@ -16,6 +17,7 @@
   <form name="roomVm.sendMessageForm" class="chat-form">
     <md-input-container layout="row" class="md-whiteframe-z3" md-no-float>
       <img ng-src="{{vm.user.avatar}}?d=wavatar" class="md-avatar"/>
+
       <div class="textarea-wrapper" flex-order="1">
         <textarea rows="1" ng-model="roomVm.message" placeholder="Chat in {{vm.$state.current.data.title}}..."></textarea>
       </div>
