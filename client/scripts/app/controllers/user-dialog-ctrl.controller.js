@@ -9,8 +9,10 @@ module.exports = function ( app ) {
 
   function controller( $mdDialog, fm, message ) {
     var vm = this;
+    var friends = fm.getList();
     vm.controllername = fullname;
     vm.message = message;
+    vm.isFriend = false;
 
     vm.cancel = function () {
       $mdDialog.cancel();
@@ -23,7 +25,14 @@ module.exports = function ( app ) {
     };
 
     var activate = function () {
-
+      for ( var i = 0; i < friends.length; i++ ) {
+        if ( friends[i].status == 1 ) {
+          if ( friends[i].user.id.toString() === message.userId.toString() ) {
+            vm.isFriend = true;
+            break;
+          }
+        }
+      }
     };
     activate();
   }

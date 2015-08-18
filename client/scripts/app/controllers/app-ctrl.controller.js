@@ -19,7 +19,6 @@ module.exports = function ( app ) {
     }, 200);
 
     vm.user.idIs = function ( id ) {
-      console.log(id);
       if ( id ) {
         return id.toString() === vm.user.id.toString();
       } else {

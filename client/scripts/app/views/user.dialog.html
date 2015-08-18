@@ -6,7 +6,7 @@
       </blockquote>
 
       <div class="md-actions" layout="row">
-        <md-button type="submit" ng-click="vm.addToFriends();" class="md-primary md-raised" tabindex="2">Add as Buddy</md-button>
+        <md-button type="submit" ng-if="!vm.isFriend" ng-click="vm.addToFriends();" class="md-primary md-raised" tabindex="2">Add</md-button>
         <md-button type="button" ng-click="vm.cancel()" tabindex="1">Close</md-button>
       </div>
     </md-dialog-content>

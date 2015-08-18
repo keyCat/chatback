@@ -96,7 +96,7 @@ module.exports = function ( app ) {
     Friends.add = function ( receiverId ) {
       return FriendResource.create({
         receiverId: receiverId
-      });
+      }).$promise;
     };
 
     Friends.onNewFriend = function ( cb ) {
