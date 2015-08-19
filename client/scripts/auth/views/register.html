@@ -32,7 +32,7 @@
         </md-input-container>
 
         <div layout="row" layout-align="space-between center">
-          <md-button class="md-primary md-raised" ng-click="vm.register();">Register</md-button>
+          <md-button class="md-primary md-raised" ng-disabled="vm.registerForm.$invalid" ng-click="vm.register();">Register</md-button>
           <md-button class="md-primary" ui-sref="auth.login">I have an account</md-button>
         </div>
       </form>

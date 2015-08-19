@@ -10,11 +10,16 @@ module.exports = function ( app ) {
   function controller( $state, User, socket ) {
     var vm = this;
     vm.controllername = fullname;
+    vm.authFail = false;
     vm.login = function () {
       User.login(vm.user, function ( resource ) {
-        socket.$reconnect();
-        $state.go('app.home');
-      });
+          socket.$reconnect();
+          $state.go('app.home');
+          vm.authFail = false;
+        }
+        , function ( response ) {
+          vm.authFail = true;
+        });
     };
 
     var activate = function () {

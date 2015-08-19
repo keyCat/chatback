@@ -6,6 +6,10 @@
       </div>
     </md-toolbar>
 
+    <div ng-if="vm.authFail">
+      <md-subheader class="md-warn">Unable to log in.</md-subheader>
+    </div>
+
     <md-content layout="column" layout-padding>
       <form name="loginForm">
         <md-input-container>
