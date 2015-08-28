@@ -1,11 +1,11 @@
 <div layout="column" flex>
   <md-content class="chat-messages-content" flex scroll-glue>
     <md-list class="chat-messages-list" layout-margin>
-      <md-list-item ng-repeat="m in roomVm.messages" ng-click="roomVm.triggerUserDialog(m, $event);">
-        <img class="md-avatar" ng-src="{{m.avatar}}?d=wavatar" alt=""/>
+      <md-list-item ng-repeat="m in roomVm.messages | orderBy:'sentTs'" ng-click="roomVm.triggerUserDialog(m, $event);">
+        <img class="md-avatar" ng-src="{{m.user.avatar}}?d=wavatar" alt=""/>
 
         <div class="md-list-item-text">
-          <h3>{{m.username}} <span class="chat-messages-list-date">{{m.sentTs | date:'hh:mm'}}</span></h3>
+          <h3>{{m.user.username}} <span class="chat-messages-list-date">{{m.sentTs | date:'hh:mm'}}</span></h3>
 
           <p>{{m.message}}</p>
         </div>

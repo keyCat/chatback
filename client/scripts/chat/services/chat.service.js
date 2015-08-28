@@ -3,9 +3,9 @@ var servicename = 'Chat';
 
 module.exports = function ( app ) {
 
-  var dependencies = ['$q', 'Chat', 'chatback.loopback.Subscribe'];
+  var dependencies = ['$q', '$rootScope', 'Chat', 'chatback.loopback.Subscribe'];
 
-  function service( $q, ChatResource, subscriber ) {
+  function service( $q, $rootScope, ChatResource, subscriber ) {
     var messageModel = 'ChatMessage';
 
     /**
@@ -35,6 +35,12 @@ module.exports = function ( app ) {
             }
           }
         });
+
+        _self.getHistory().then(function ( messages ) {
+          for ( var i = 0; messages[i]; i++ ) {
+            _self.messages.push(messages[i]);
+          }
+        });
       }
     }
 
@@ -56,6 +62,24 @@ module.exports = function ( app ) {
       }
 
       return message;
+    };
+
+    /*
+     * Fetch chat history
+     * @returns Promise
+     * */
+
+    Chat.prototype.getHistory = function () {
+      var req = {
+        id: this.id,
+        filter: {
+          limit: 50,
+          skip: this.messages.length,
+          order: 'sentTs DESC'
+        }
+      };
+
+      return ChatResource.messages(req).$promise;
     };
 
     /**

@@ -17,21 +17,26 @@ module.exports = function ( ChatMessage ) {
   ChatMessage.observe('after save', function ( ctx, next ) {
     var io = ChatMessage.app.io;
     var instance = ctx.instance;
-
+    var converted = JSON.parse(JSON.stringify(instance));
     var options = {
       modelName: ChatMessage.modelName,
       modelId: instance.id,
       method: ctx.isNewInstance ? 'POST' : 'PUT',
-      data: instance
+      data: converted
     };
 
     instance.user({fields: {id: true, username: true, avatar: true}}, function ( err, user ) {
       if ( err ) return next(err);
-      instance.setAttribute('username', user.username);
-      instance.setAttribute('avatar', user.avatar);
+      converted.user = user;
       pubsub.publishTo(io, socketHandler.SOCKET_ROOM_ALIAS + instance.chatId, options);
 
       next();
     });
+  });
+
+  ChatMessage.observe('access', function ( ctx, next ) {
+    ctx.query.include = {relation: 'user', scope: {fields: ['username', 'avatar']}};
+
+    next();
   });
 };
