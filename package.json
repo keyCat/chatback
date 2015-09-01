@@ -146,7 +146,8 @@
     "yargs": "3.14.0"
   },
   "engines": {
-    "node": "0.10.40"
+    "node": "0.10.40",
+    "npm": "2.14.1"
   },
   "browser": {
     "unitHelper": "./test/unit/unitHelper.js"
