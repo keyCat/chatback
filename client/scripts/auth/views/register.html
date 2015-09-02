@@ -6,11 +6,18 @@
       </div>
     </md-toolbar>
 
+    <div ng-if="vm.authFail">
+      <md-subheader class="md-warn">Unable to create an account.</md-subheader>
+    </div>
+
     <md-content layout="column" layout-padding>
       <form name="vm.registerForm">
         <md-input-container>
           <label>&ast; Handle</label>
           <input type="text" name="username" ng-model="vm.user.username" ng-model-options="{debounce: 300}" required/>
+          <div ng-messages="vm.errors.username.e" ng-if="vm.user.username == vm.errors.username.v">
+            <div ng-message="uniqueness">{{vm.errors.username.m['uniqueness']}}</div>
+          </div>
           <div ng-messages="vm.registerForm.username.$error" ng-if="vm.registerForm.username.$dirty">
             <div ng-message="required">Required</div>
           </div>
@@ -18,6 +25,9 @@
         <md-input-container>
           <label>&ast; Email</label>
           <input type="email" name="email" ng-model="vm.user.email" ng-model-options="{debounce: 300}" required/>
+          <div ng-messages="vm.errors.email.e" ng-if="vm.user.email == vm.errors.email.v">
+            <div ng-message="uniqueness">{{vm.errors.email.m['uniqueness']}}</div>
+          </div>
           <div ng-messages="vm.registerForm.email.$error" ng-if="vm.registerForm.email.$dirty">
             <div ng-message="required">Required</div>
           </div>
@@ -26,6 +36,8 @@
         <md-input-container>
           <label>&ast; Password</label>
           <input type="password" name="password" ng-model="vm.user.password" ng-model-options="{debounce: 300}" required/>
+          <div ng-messages="vm.errors.password.e" ng-if="!vm.registerForm.password.$error">
+          </div>
           <div ng-messages="vm.registerForm.password.$error" ng-if="vm.registerForm.password.$dirty">
             <div ng-message="required">Required</div>
           </div>
