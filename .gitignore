@@ -21,6 +21,9 @@ npm-debug.log
 # Ignore build files
 dist/
 
+# Ignore memory db file
+server/db.json
+
 # Vendor files
 bower_components/
 vendor/
